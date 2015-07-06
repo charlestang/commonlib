@@ -3,7 +3,7 @@
     "description": "Some common helper classes.",
     "type": "library",
     "require-dev": {
-        "phpunit/phpunit": "4.7"
+        "phpunit/phpunit": "4.7.*"
     },
     "license": "MIT",
     "authors": [

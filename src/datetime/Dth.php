@@ -1,6 +1,6 @@
 <?php
 
-namespace \charlestang\commonlib\datetime;
+namespace charlestang\commonlib\datetime;
 
 defined('DTH_TIMEZONE') or define('DTH_TIMEZONE', 'Asia/Shanghai');
 
@@ -13,6 +13,8 @@ if (empty(ini_get('date.timezone'))) {
  * save a lot of type when programming.
  *
  * (PHP 5 >= 5.3.0)
+ *
+ * @author Charles Tang <charlestang@foxmail.com>
  */
 class Dth
 {
