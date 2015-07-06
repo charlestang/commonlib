@@ -34,7 +34,7 @@ class Dth
      * Return style
      */
     const BY_UNIX_TIMESTAMP = 'timestamp'; //Unix timestamp
-    const BY_MYSQL_DATETIME = 'datetime';  //formatted datetime
+    const BY_FORMATTED_DATE = 'formatted';  //formatted datetime
 
     /**
      * Interval Type
@@ -44,34 +44,34 @@ class Dth
 
     //above constant definition
 
-    public static function translate($string, $by = self::BY_MYSQL_DATETIME, $format = self::FORMAT_MYSQL_DATETIME)
+    public static function translate($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
     {
         $time = strtotime($string);
-        if ($by == self::BY_MYSQL_DATETIME) {
+        if ($by == self::BY_FORMATTED_DATE) {
             $time = date($format, $time);
         }
         return $time;
     }
 
-    public static function getTodayDate($by = self::BY_MYSQL_DATETIME, $format = self::FORMAT_MYSQL_DATE)
+    public static function getTodayDate($by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATE)
     {
         return self::translate('today', $by, $format);
     }
 
-    public static function getTomorrowDate($by = self::BY_MYSQL_DATETIME, $format = self::FORMAT_MYSQL_DATE)
+    public static function getTomorrowDate($by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATE)
     {
         return self::translate('tomorrow', $by, $format);
     }
 
-    public static function getYesterdayDate($by = self::BY_MYSQL_DATETIME, $format = self::FORMAT_MYSQL_DATE)
+    public static function getYesterdayDate($by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATE)
     {
         return self::translate('yesterday', $by, $format);
     }
 
-    public static function getNow($by = self::BY_MYSQL_DATETIME, $format = self::FORMAT_MYSQL_DATETIME)
+    public static function getNow($by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
     {
         $time = time();
-        if ($by === self::BY_MYSQL_DATETIME) {
+        if ($by === self::BY_FORMATTED_DATE) {
             $time = date($format, $time);
         }
         return $time;
