@@ -56,7 +56,7 @@ class Dth
      */
     public static function translate($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
     {
-        $time = strtotime($string);
+        $time = $string === 'now' ? time() : strtotime($string);
         if ($by == self::BY_FORMATTED_DATE) {
             $time = date($format, $time);
         }
@@ -80,11 +80,7 @@ class Dth
 
     public static function getNow($by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
     {
-        $time = time();
-        if ($by === self::BY_FORMATTED_DATE) {
-            $time = date($format, $time);
-        }
-        return $time;
+        return self::translate('now', $by, $format);
     }
 
     public static function translateInterval($start, $end, $style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
@@ -130,7 +126,7 @@ class Dth
     public static function getNextMonthInterval($style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
         $format = self::FORMAT_MYSQL_DATETIME)
     {
-        $month_start = date('Y-m-01 00:00:00', self::translate('this month', self::BY_UNIX_TIMESTAMP));
+        $month_start      = date('Y-m-01 00:00:00', self::translate('this month', self::BY_UNIX_TIMESTAMP));
         $next_month_start = date('Y-m-01 00:00:00', self::translate($month_start . ' +1 month', self::BY_UNIX_TIMESTAMP));
         return self::translateInterval($next_month_start, $next_month_start . ' +1 month', $style, $by, $format);
     }
@@ -138,7 +134,7 @@ class Dth
     public static function getLastMonthInterval($style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
         $format = self::FORMAT_MYSQL_DATETIME)
     {
-        $month_start = date('Y-m-01 00:00:00', self::translate('this month', self::BY_UNIX_TIMESTAMP));
+        $month_start      = date('Y-m-01 00:00:00', self::translate('this month', self::BY_UNIX_TIMESTAMP));
         $last_month_start = date('Y-m-01 00:00:00', self::translate($month_start . ' -1 month', self::BY_UNIX_TIMESTAMP));
         return self::translateInterval($last_month_start, $last_month_start . ' +1 month', $style, $by, $format);
     }
