@@ -135,6 +135,22 @@ class Dth
         return self::translateInterval($last_month_start, $last_month_start . ' +1 month', $style, $by, $format);
     }
 
+    public static function getDateStart($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
+    {
+        return self::translate(self::translate($string, self::BY_FORMATTED_DATE, self::FORMAT_MYSQL_DATE), $by, $format);
+    }
+
+    public static function getDateEnd($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME) 
+    {
+        return self::translate(self::translate($string, self::BY_FORMATTED_DATE, self::FORMAT_MYSQL_DATE) . ' 23:59:59', $by, $format);
+    }
+
+    public static function getDateInterval($string, $style=self::INTERVAL_CLOSED, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
+    {
+        $start = self::getDateStart($string);
+        return self::translateInterval($start, $start . ' +1 day', $style, $by, $format);
+    }
+
     /**
      * Calculate days between two date string, the first parameter is bigger in unix timestamp format, that means the
      * corresponding time is a forward time of the second parameter
