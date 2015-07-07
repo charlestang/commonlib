@@ -153,7 +153,17 @@ class Dth
         return self::translate(self::translate($string, self::BY_FORMATTED_DATE, self::FORMAT_MYSQL_DATE) . ' 23:59:59', $by, $format);
     }
 
-    public static function getDateInterval($string, $style=self::INTERVAL_CLOSED, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
+    /**
+     * This method is used to calculate an interval of some specific date time string.
+     * 
+     * @param string $string date time string
+     * @param string $style  what the style of the interval, HALF_CLOSED, e.g. [x,y) , CLOSED, e.g. [x,y] .
+     * @param string $by     in which way to translate
+     * @param string $format format string
+     * @return array
+     */
+    public static function getDateInterval($string, $style=self::INTERVAL_CLOSED, $by = self::BY_FORMATTED_DATE, 
+        $format = self::FORMAT_MYSQL_DATETIME)
     {
         $start = self::getDateStart($string);
         return self::translateInterval($start, $start . ' +1 day', $style, $by, $format);
