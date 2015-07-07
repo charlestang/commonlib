@@ -55,6 +55,19 @@ class DthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testGetDateInterval() 
+    {
+        $expected = [
+            ['2015-01-01 00:00:00', '2015-01-01 23:59:59'],
+            ['2014-12-31 00:00:00', '2015-01-01 00:00:00'],
+        ];
+        $actual = [
+            Dth::getDateInterval('2015-01-01 12:34:56'),
+            Dth::getDateInterval('2014-12-31 12:34:56', Dth::INTERVAL_HALF_CLOSED),
+        ];
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testCountDays()
     {
         $expected = [
