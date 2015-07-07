@@ -46,6 +46,14 @@ class Dth
 
     //above constant definition
 
+    /**
+     * This is a low level api, which can translate a string protentially represented a date or time to
+     * some specific format date time string or integer.
+     * @param string $string date time string
+     * @param string $by     in which way to translate
+     * @param string $format format string
+     * @return mixed
+     */
     public static function translate($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
     {
         $time = strtotime($string);
