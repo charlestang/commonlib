@@ -40,4 +40,19 @@ class DthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testGetYesterdayDate()
+    {
+        $expected = [
+            date('Y-m-d', strtotime('-1 day')),
+            date('Y-m-d 00:00:00', strtotime('-1 day')),
+            strtotime(date('Y-m-d', strtotime('-1 day'))),
+        ];
+        $actual   = [
+            Dth::getYesterdayDate(),
+            Dth::getYesterdayDate(Dth::BY_FORMATTED_DATE, Dth::FORMAT_MYSQL_DATETIME),
+            Dth::getYesterdayDate(Dth::BY_UNIX_TIMESTAMP),
+        ];
+        $this->assertEquals($expected, $actual);
+    }
+
 }
