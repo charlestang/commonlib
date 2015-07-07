@@ -55,4 +55,21 @@ class DthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    public function testCountDays()
+    {
+        $expected = [
+            0,
+            1,
+            0,
+            -1,
+        ];
+        $actual   = [
+            Dth::countDays('2015-01-01', '2015-01-01'),
+            Dth::countDays('2015-03-01', '2015-02-28'),
+            Dth::countDays('2015-01-01 23:59:59', '2015-01-01 00:00:00'),
+            Dth::countDays('2014-12-31', '2015-01-01'),
+        ];
+        $this->assertEquals($expected, $actual);
+    }
+
 }
