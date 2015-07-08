@@ -2,12 +2,17 @@
 
 namespace charlestang\commonlib\qcloud\cos;
 
-use \Httpful\Http;
+use \Httpful\Handlers\JsonHandler;
+use \Httpful\Httpful;
+use \Httpful\Mime;
 use \Httpful\Request;
+use \Httpful\Response;
 
 defined('COS_APP_ID') or define('COS_APP_ID', 0);
 defined('COS_SECRET_ID') or define('COS_SECRET_ID', 0);
 defined('COS_SECRET_KEY') or define('COS_SECRET_KEY', 0);
+
+Httpful::register(Mime::JSON, new JsonHandler(['decode_as_array' => true]));
 
 class Cos
 {
@@ -54,17 +59,8 @@ class Cos
             $body['biz_attr'] = $attribute;
         }
         $payload = json_encode($body);
-        $request = new Request([
-            'uri'     => $apiUrl,
-            'method'  => Http::POST,
-            'headers' => [
-                'authorization'  => $this->getAuthorizationSign($bucketName, $path),
-                'content-type'   => 'application/json',
-                'content-length' => strlen($payload),
-            ],
-            'payload' => $payload,
-        ]);
-
+        $request = Request::post($apiUrl, $payload, 'json')->addHeader('authorization',
+            $this->getAuthorizationSign($bucketName, $path));
         return $this->parseResponse($request->send());
     }
 
@@ -104,6 +100,26 @@ class Cos
     }
 
     /**
+     *
+     * @param Response $response
+     */
+    private function parseResponse($response)
+    {
+        if ($response->hasErrors()) {
+            if ($response->hasBody()) {
+                throw new Exception($response->body['code'], $response->body['message']);
+            } else {
+                throw new Exception($response->code, 'HTTP Error.');
+            }
+        }
+        if ($response->body['code'] == 0) {
+            return $response->body['data'];
+        } else {
+            throw new Exception($response->body['code'], $response->body['message']);
+        }
+    }
+
+    /**
      * 生成授权签名
      * @param string $bucketName
      * @param string $path
@@ -117,6 +133,8 @@ class Cos
 
         if ($type == self::SIGN_TYPE_ONCE) { //一次有效的签名，$expire 必须填 0
             $expire = 0;
+        } else {
+            $expire = time() + $expire;
         }
         if ($type == self::SIGN_TYPE_MULT) { //多次有效的签名，$path 填空
             $path = '';

@@ -2,6 +2,8 @@
 
 use \charlestang\commonlib\qcloud\cos\Cos;
 
+require __DIR__ . '/define.php';
+
 /**
  * Test Cases of Cos
  *
@@ -29,6 +31,17 @@ class CosTest extends PHPUnit_Framework_TestCase
         ];
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testCreateDiretory()
+    {
+        $cos = new Cos();
+        try {
+            $result = $cos->createDirectory('test', 'a/');
+            $this->assertArrayHasKey('ctime', $result);
+        } catch (Exception $ex) {
+            $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
     }
 
 }
