@@ -150,7 +150,7 @@ class Cos
         return rtrim($str, '&');
     }
 
-    public function encode($string, $key)
+    private function encode($string, $key)
     {
         return base64_encode(hash_hmac('sha1', $string, $key, true) . $string);
     }
