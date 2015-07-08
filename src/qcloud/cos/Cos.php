@@ -1,13 +1,13 @@
 <?php
 
-defined('COS_APP_ID') or define('COS_APP_ID', 0);
-defined('COS_SECRET_ID') or define('COS_SECRET_ID', 0);
-defined('COS_SECRET_KEY') or define('COS_SECRET_KEY', 0);
-
 namespace charlestang\commonlib\qcloud\cos;
 
 use \Httpful\Http;
 use \Httpful\Request;
+
+defined('COS_APP_ID') or define('COS_APP_ID', 0);
+defined('COS_SECRET_ID') or define('COS_SECRET_ID', 0);
+defined('COS_SECRET_KEY') or define('COS_SECRET_KEY', 0);
 
 class Cos
 {
@@ -133,7 +133,7 @@ class Cos
 
         $str = $this->buildString($params);
 
-        return base64_encode(hash_hmac('sha1', $str, $this->secretKey, true) . $str);
+        return $this->encode($str, $this->secretKey);
     }
 
     private function getBaseUrl()
@@ -148,6 +148,11 @@ class Cos
             $str .= $k . '=' . $v . '&';
         }
         return rtrim($str, '&');
+    }
+
+    public function encode($string, $key)
+    {
+        return base64_encode(hash_hmac('sha1', $string, $key, true) . $string);
     }
 
 }
