@@ -1,11 +1,64 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "14ad840eaf85ab6b145cc00356f13140",
-    "packages": [],
+    "hash": "a67602abef1401cad1930ed849040df2",
+    "packages": [
+        {
+            "name": "charlestang/httpful",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/charlestang/httpful.git",
+                "reference": "d45232459e7c1dd08031bbd3b0b7bcf0115bd6b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/charlestang/httpful/zipball/d45232459e7c1dd08031bbd3b0b7bcf0115bd6b5",
+                "reference": "d45232459e7c1dd08031bbd3b0b7bcf0115bd6b5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Httpful": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Charles Tang",
+                    "email": "charlestang@foxmail.com",
+                    "homepage": "http://sexywp.com"
+                }
+            ],
+            "description": "A Readable, Chainable, REST friendly, PHP HTTP Client",
+            "homepage": "http://github.com/charlestang/httpful",
+            "keywords": [
+                "api",
+                "curl",
+                "http",
+                "requests",
+                "rest",
+                "restful"
+            ],
+            "support": {
+                "source": "https://github.com/charlestang/httpful/tree/master"
+            },
+            "time": "2015-07-08 14:49:08"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/instantiator",
@@ -961,7 +1014,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "charlestang/httpful": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
