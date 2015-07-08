@@ -18,5 +18,13 @@
             "charlestang\\commonlib\\": "src/"
         }
     },
-    "require": {}
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/charlestang/httpful"
+        }
+    ],
+    "require": {
+        "charlestang/httpful": "dev-master"
+    }
 }
