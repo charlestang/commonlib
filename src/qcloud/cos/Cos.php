@@ -119,10 +119,10 @@ class Cos
 
     public function deleteNode($bucketName, $nodePath)
     {
-        $path   = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $nodePath;
-        $apiUrl = $this->getBaseUrl() . $path;
-        $body   = [
-            'op'            => 'delete',
+        $path    = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $nodePath;
+        $apiUrl  = $this->getBaseUrl() . $path;
+        $body    = [
+            'op' => 'delete',
         ];
         $payload = json_encode($body);
         $request = Request::post($apiUrl, $payload, 'json')->addHeader('authorization',
@@ -146,9 +146,13 @@ class Cos
     {
         $exists = true;
         try {
-            $result = $this->listDirectory($bucketName, $dirPath);
+            $this->listDirectory($bucketName, $dirPath);
         } catch (Exception $ex) {
-            $exists = false;
+            if ($ex->getCode() == Error::ERR_INDEX_NOT_FOUND) {
+                $exists = false;
+            } else {
+                throw $ex;
+            }
         }
         return $exists;
     }
