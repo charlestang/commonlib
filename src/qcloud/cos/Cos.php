@@ -17,17 +17,24 @@ Httpful::register(Mime::JSON, new JsonHandler(['decode_as_array' => true]));
 class Cos
 {
 
-    const API_SCHEMA     = 'http://';
-    const API_DOMAIN     = 'web.file.myqcloud.com';
-    const API_BASE_URL   = '/files/v1';
+    const API_SCHEMA             = 'http://';
+    const API_DOMAIN             = 'web.file.myqcloud.com';
+    const API_BASE_URL           = '/files/v1';
     //是否覆盖
-    const OVERWRITE      = 1;
-    const NON_OVERWRITE  = 0;
+    const OVERWRITE              = 1;
+    const NON_OVERWRITE          = 0;
     //签名类型
-    const SIGN_TYPE_ONCE = 1; //一次有效
-    const SIGN_TYPE_MULT = 2; //多次有效
+    const SIGN_TYPE_ONCE         = 1; //一次有效
+    const SIGN_TYPE_MULT         = 2; //多次有效
     //签名有效时间
-    const SIGN_EXPIRE    = 60; //60秒
+    const SIGN_EXPIRE            = 60; //60秒
+    //列表顺序
+    const LIST_ORDER_NORMAL      = 0;
+    const LIST_ORDER_REVERSE     = 1;
+    //列表的方式
+    const LIST_PATTERN_BOTH      = 'eListBoth';
+    const LIST_PATTERN_FILE_ONLY = 'eListFileOnly';
+    const LIST_PATTERN_DIR_ONLY  = 'ListDirOnly';
 
     //以上常量定义
 
@@ -66,7 +73,7 @@ class Cos
 
     public function deleteDirectory($bucketName, $dirPath)
     {
-
+        return $this->deleteNode($bucketName, $dirPath);
     }
 
     public function updateDirectory($bucketName, $dirPath, $bizAttr)
@@ -74,9 +81,76 @@ class Cos
 
     }
 
-    public function listDirectory()
+    /**
+     * 实现了类似
+     * @param string $bucketName
+     * @param string $nodePath     路径名，以 / 结尾
+     * @param string $prefix      按照前缀过滤
+     * @param string $offset      起始位置
+     * @param int    $pageSize    每页数量
+     * @param string $pattern     列表方式，缺省是文件夹和文件都显示
+     * @param int    $direction   列表方向
+     *
+     * @return type
+     */
+    public function lsNode($bucketName, $nodePath, $prefix = '', $offset = '', $pageSize = 10,
+        $pattern = self::LIST_PATTERN_BOTH, $direction = self::LIST_ORDER_NORMAL)
     {
+        $path   = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $nodePath;
+        $apiUrl = $this->getBaseUrl() . $path;
+        if (!empty($prefix)) { //如果按照前缀搜索的话
+            $apiUrl .= $prefix;
+        }
+        $query = [
+            'op'      => 'list',
+            'num'     => $pageSize,
+            'pattern' => $pattern,
+            'order'   => $direction,
+        ];
+        if (!empty($offset)) {
+            $query['offset'] = $offset;
+        }
 
+        $apiUrl .= '?' . http_build_query($query);
+
+        $request = Request::get($apiUrl, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path));
+        return $this->parseResponse($request->send());
+    }
+
+    public function deleteNode($bucketName, $nodePath)
+    {
+        $path   = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $nodePath;
+        $apiUrl = $this->getBaseUrl() . $path;
+        $body   = [
+            'op'            => 'delete',
+        ];
+        $payload = json_encode($body);
+        $request = Request::post($apiUrl, $payload, 'json')->addHeader('authorization',
+            $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
+        return $this->parseResponse($request->send());
+    }
+
+    public function listDirectory($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10,
+        $direction = self::LIST_ORDER_NORMAL)
+    {
+        return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_DIR_ONLY, $direction);
+    }
+
+    public function listFile($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10,
+        $direction = self::LIST_ORDER_NORMAL)
+    {
+        return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_FILE_ONLY, $direction);
+    }
+
+    public function directoryExists($bucketName, $dirPath)
+    {
+        $exists = true;
+        try {
+            $result = $this->listDirectory($bucketName, $dirPath);
+        } catch (Exception $ex) {
+            $exists = false;
+        }
+        return $exists;
     }
 
     public function uploadFile()
@@ -84,17 +158,12 @@ class Cos
 
     }
 
-    public function deleteFile()
+    public function deleteFile($bucketName, $filePath)
     {
-
+        $this->deleteNode($bucketName, $filePath);
     }
 
     public function updateFileAttribute()
-    {
-
-    }
-
-    public function listFile()
     {
 
     }
@@ -113,7 +182,7 @@ class Cos
             }
         }
         if ($response->body['code'] == 0) {
-            return $response->body['data'];
+            return isset($response->body['data']) ? $response->body['data'] : true;
         } else {
             throw new Exception($response->body['code'], $response->body['message']);
         }

@@ -7,13 +7,9 @@ namespace charlestang\commonlib\qcloud\cos;
  *
  * @author charles
  */
-class Directory
+class Directory extends Node
 {
 
-    public $name;
-    public $attribute;
-    public $createTime;
-    public $modifyTime;
-    public $url;
+
 
 }

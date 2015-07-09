@@ -33,15 +33,45 @@ class CosTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCreateDiretory()
+    public function testDirectoryExists()
     {
-        $cos = new Cos();
-        try {
-            $result = $cos->createDirectory('test', 'a/');
-            $this->assertArrayHasKey('ctime', $result);
-        } catch (Exception $ex) {
-            $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        $cos    = new Cos();
+        $exists = $cos->directoryExists('test', 'a/');
+        $this->assertContains($exists, [true, false]);
+        return $exists;
+    }
+
+    /**
+     * @depends testDirectoryExists
+     */
+    public function testCreateAndDeleteDiretory($exists)
+    {
+        if (!$exists) {
+            $this->createDirectory();
+            $this->deleteDirectory();
+        } else {
+            $this->deleteDirectory();
+            $this->createDirectory();
         }
     }
 
+    protected function createDirectory() {
+            try {
+        $cos = new Cos();
+                $result = $cos->createDirectory('test', 'a/');
+                $this->assertArrayHasKey('ctime', $result);
+            } catch (Exception $ex) {
+                $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+            }
+    }
+
+    protected function deleteDirectory() {
+            try {
+        $cos = new Cos();
+                $result = $cos->deleteDirectory('test', 'a/');
+                $this->assertTrue($result);
+            } catch (Exception $ex) {
+                $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+            }
+    }
 }
