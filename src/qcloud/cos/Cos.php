@@ -78,7 +78,21 @@ class Cos
 
     public function updateDirectory($bucketName, $dirPath, $bizAttr)
     {
+        return $this->updateNode($bucketName, $dirPath, $bizAttr);
+    }
 
+    public function updateNode($bucketName, $nodePath, $bizAttr)
+    {
+        $path    = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $nodePath;
+        $apiUrl  = $this->getBaseUrl() . $path;
+        $body    = [
+            'op'       => 'update',
+            'biz_attr' => $bizAttr,
+        ];
+        $payload = json_encode($body);
+        $request = Request::post($apiUrl, $payload, 'json')->addHeader('authorization',
+            $this->getAuthorizationSign($bucketName, $path));
+        return $this->parseResponse($request->send());
     }
 
     /**
@@ -159,7 +173,6 @@ class Cos
 
     public function uploadFile()
     {
-
     }
 
     public function deleteFile($bucketName, $filePath)
@@ -167,9 +180,9 @@ class Cos
         $this->deleteNode($bucketName, $filePath);
     }
 
-    public function updateFileAttribute()
+    public function updateFileAttribute($bucketName, $filePath, $bizAttr)
     {
-
+        return $this->updateNode($bucketName, $filePath, $bizAttr);
     }
 
     /**
