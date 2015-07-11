@@ -82,8 +82,8 @@ class CosTest extends PHPUnit_Framework_TestCase
         $cos      = new Cos();
         $filename = __DIR__ . '/test_upload.txt';
         try {
-            $result = $cos->uploadFile('test', 'test.txt', $filename);
-            var_dump($result);
+            //$result = $cos->uploadFile('test', 'test.txt', $filename);
+            //var_dump($result);
             $res2 = $cos->deleteFile('test', 'test.txt');
             var_dump($res2);
         } catch (Exception $ex) {
