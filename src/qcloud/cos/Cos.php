@@ -71,16 +71,36 @@ class Cos
         return $this->parseResponse($request->send());
     }
 
+    /**
+     * 删除一个目录
+     * @param string $bucketName
+     * @param string $dirPath
+     * @return
+     */
     public function deleteDirectory($bucketName, $dirPath)
     {
         return $this->deleteNode($bucketName, $dirPath);
     }
 
+    /**
+     * 更新一个目录的自定义属性
+     * @param string $bucketName
+     * @param string $dirPath
+     * @param string $bizAttr
+     * @return
+     */
     public function updateDirectory($bucketName, $dirPath, $bizAttr)
     {
         return $this->updateNode($bucketName, $dirPath, $bizAttr);
     }
 
+    /**
+     * 底层方法，更新一个节点，可以更新一个目录，也可以更新一个文件的自定义属性
+     * @param string $bucketName
+     * @param string $nodePath
+     * @param string $bizAttr
+     * @return
+     */
     public function updateNode($bucketName, $nodePath, $bizAttr)
     {
         $path    = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $nodePath;
@@ -96,7 +116,7 @@ class Cos
     }
 
     /**
-     * 实现了类似
+     * 实现了类似 Linux ls命令的方法
      * @param string $bucketName
      * @param string $nodePath     路径名，以 / 结尾
      * @param string $prefix      按照前缀过滤
@@ -186,7 +206,6 @@ class Cos
     }
 
     /**
-     *
      * @param Response $response
      */
     private function parseResponse($response)
