@@ -1,0 +1,8 @@
+a simple line.
+
+something with "quote" and 'single quote'
+
+empty line. (above)
+
+double new line EOF
+

@@ -191,8 +191,26 @@ class Cos
         return $exists;
     }
 
-    public function uploadFile()
+    public function uploadFile($bucketName, $filePath, $filename, $attribute = '')
     {
+        $path   = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $filePath;
+        $apiUrl = $this->getBaseUrl() . $path;
+
+        $fd       = fopen($filename, 'rb');
+        $contents = fread($fd, filesize($filename));
+        fclose($fd);
+
+        $body = [
+            'op'          => 'upload',
+            'filecontent' => $contents,
+            'sha'         => sha1_file($filename),
+        ];
+        if (!empty($attribute)) {
+            $body['biz_attr'] = $attribute;
+        }
+        $request = Request::post($apiUrl, $body, Mime::UPLOAD)->expects('json')->addHeader('authorization',
+            $this->getAuthorizationSign($bucketName, $path));
+        return $this->parseResponse($request->send());
     }
 
     public function deleteFile($bucketName, $filePath)

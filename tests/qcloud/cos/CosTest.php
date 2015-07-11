@@ -55,23 +55,40 @@ class CosTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    protected function createDirectory() {
-            try {
-        $cos = new Cos();
-                $result = $cos->createDirectory('test', 'a/');
-                $this->assertArrayHasKey('ctime', $result);
-            } catch (Exception $ex) {
-                $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
-            }
+    protected function createDirectory()
+    {
+        try {
+            $cos    = new Cos();
+            $result = $cos->createDirectory('test', 'a/');
+            $this->assertArrayHasKey('ctime', $result);
+        } catch (Exception $ex) {
+            $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
     }
 
-    protected function deleteDirectory() {
-            try {
-        $cos = new Cos();
-                $result = $cos->deleteDirectory('test', 'a/');
-                $this->assertTrue($result);
-            } catch (Exception $ex) {
-                $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
-            }
+    protected function deleteDirectory()
+    {
+        try {
+            $cos    = new Cos();
+            $result = $cos->deleteDirectory('test', 'a/');
+            $this->assertTrue($result);
+        } catch (Exception $ex) {
+            $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
     }
+
+    public function testUploadFile()
+    {
+        $cos      = new Cos();
+        $filename = __DIR__ . '/test_upload.txt';
+        try {
+            $result = $cos->uploadFile('test', 'test.txt', $filename);
+            var_dump($result);
+            $res2 = $cos->deleteFile('test', 'test.txt');
+            var_dump($res2);
+        } catch (Exception $ex) {
+            var_dump($ex->getCode(), $ex->getMessage());
+        }
+    }
+
 }
