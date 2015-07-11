@@ -14,6 +14,10 @@ defined('COS_SECRET_KEY') or define('COS_SECRET_KEY', 0);
 
 Httpful::register(Mime::JSON, new JsonHandler(['decode_as_array' => true]));
 
+/**
+ * Cos对象，封装了腾讯云“对象存储服务”的相关API，提供了面向对象风格的文件系统操作接口。
+ * @author Charles Tang <charlestang@foxmail.com>
+ */
 class Cos
 {
 
@@ -42,6 +46,13 @@ class Cos
     private $secretId;
     private $secretKey;
 
+    /**
+     * 构造函数
+     *
+     * @param string $appId
+     * @param string $secretId
+     * @param string $secretKey
+     */
     public function __construct($appId = COS_APP_ID, $secretId = COS_SECRET_ID, $secretKey = COS_SECRET_KEY)
     {
         $this->appId     = $appId;
@@ -50,9 +61,12 @@ class Cos
     }
 
     /**
-     * 在一个指定的Bucket中，创建一个目录
-     * @param string $bucket_name bucket的名字
-     * @param string $dir_path    要创建的目录的路径，要从根目录写起，以 / 结尾
+     * 在指定的Bucket中，创建一个目录
+     * @param string $bucketName   bucket的名字
+     * @param string $dirPath      要创建的目录的路径，要从根目录写起，以 / 结尾
+     * @param string $attribute    自定义属性，可以是任意的一个字符串
+     * @param int    $overwrite    如果目录已经存在，是否覆盖
+     * @return type
      */
     public function createDirectory($bucketName, $dirPath, $attribute = '', $overwrite = self::NON_OVERWRITE)
     {
