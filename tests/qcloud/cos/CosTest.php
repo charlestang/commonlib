@@ -17,7 +17,7 @@ class CosTest extends PHPUnit_Framework_TestCase
      */
     const UNIT_TEST_BUCKET = 'unit_test';
 
-//以上常量定义
+    //以上常量定义
 
     protected $cos;
 
@@ -31,8 +31,8 @@ class CosTest extends PHPUnit_Framework_TestCase
      */
     public function testRequirements()
     {
-        $this->assertTrue($this->cos->directoryExists(self::UNIT_TEST_BUCKET, ''), '请创建一个名为 unit_test 的 bucket，用于执行测试用例');
-        return 'test_exists/';
+        $this->assertTrue($this->cos->directoryExists(self::UNIT_TEST_BUCKET, '/'), '请创建一个名为 unit_test 的 bucket，用于执行测试用例');
+        return '/test_exists/';
     }
 
     /**
@@ -53,8 +53,8 @@ class CosTest extends PHPUnit_Framework_TestCase
     public function testClearData()
     {
         $emptyDirectories = [
-            'test_create_new/',
-            'test_create_new_with_attr/',
+            '/test_create_new/',
+            '/test_create_new_with_attr/',
         ];
         foreach ($emptyDirectories as $dir) {
             if ($this->testDirectoryExists($dir)) {
@@ -70,15 +70,15 @@ class CosTest extends PHPUnit_Framework_TestCase
     {
         //case 1: 创建一个全新的不存在的目录
         try {
-            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, 'test_create_new/');
-            $this->assertArrayHasKey('ctime', $result);
+            $result1 = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new/');
+            $this->assertArrayHasKey('ctime', $result1);
         } catch (Exception $ex) {
-            $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+            $this->fail('Failed! Case: "create a new empty directory" Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
         }
 
         //case 2: 创建一个带有属性的不存在的目录
         try {
-            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, 'test_create_new_with_attr/',
+            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/',
                 'attr:rwxrwxrwx|user:123|group:234');
             $this->assertArrayHasKey('ctime', $result);
         } catch (Exception $ex) {

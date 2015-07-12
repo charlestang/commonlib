@@ -66,13 +66,12 @@ class Cos
      * @param string $dirPath      要创建的目录的路径，要从根目录写起，以 / 结尾
      * @param string $attribute    自定义属性，可以是任意的一个字符串
      * @param int    $overwrite    如果目录已经存在，是否覆盖
-     * @return type
+     * @return array 返回数组，键 ctime 记录目录创建时间
      */
     public function createDirectory($bucketName, $dirPath, $attribute = '', $overwrite = self::NON_OVERWRITE)
     {
-        $path   = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $dirPath;
-        $apiUrl = $this->getBaseUrl() . $path;
-        $body   = [
+        $path = $this->getAbsoluteDirPath($bucketName, $dirPath);
+        $body = [
             'op'            => 'create',
             'to_over_write' => $overwrite,
         ];
@@ -80,7 +79,7 @@ class Cos
             $body['biz_attr'] = $attribute;
         }
         $payload = json_encode($body);
-        $request = Request::post($apiUrl, $payload, 'json')->addHeader('authorization',
+        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
             $this->getAuthorizationSign($bucketName, $path));
         return $this->parseResponse($request->send());
     }
@@ -89,10 +88,11 @@ class Cos
      * 删除一个目录
      * @param string $bucketName
      * @param string $dirPath
-     * @return
+     * @return boolean 成功删除返回true
      */
     public function deleteDirectory($bucketName, $dirPath)
     {
+        $this->checkDirPath($dirPath);
         return $this->deleteNode($bucketName, $dirPath);
     }
 
@@ -105,6 +105,7 @@ class Cos
      */
     public function updateDirectory($bucketName, $dirPath, $bizAttr)
     {
+        $this->checkDirPath($dirPath);
         return $this->updateNode($bucketName, $dirPath, $bizAttr);
     }
 
@@ -117,14 +118,13 @@ class Cos
      */
     public function updateNode($bucketName, $nodePath, $bizAttr)
     {
-        $path    = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $nodePath;
-        $apiUrl  = $this->getBaseUrl() . $path;
+        $path    = $this->getAbsolutePath($bucketName, $nodePath);
         $body    = [
             'op'       => 'update',
             'biz_attr' => $bizAttr,
         ];
         $payload = json_encode($body);
-        $request = Request::post($apiUrl, $payload, 'json')->addHeader('authorization',
+        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
             $this->getAuthorizationSign($bucketName, $path));
         return $this->parseResponse($request->send());
     }
@@ -144,7 +144,7 @@ class Cos
     public function lsNode($bucketName, $nodePath, $prefix = '', $offset = '', $pageSize = 10,
         $pattern = self::LIST_PATTERN_BOTH, $direction = self::LIST_ORDER_NORMAL)
     {
-        $path   = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $nodePath;
+        $path   = $this->getAbsolutePath($bucketName, $nodePath);
         $apiUrl = $this->getBaseUrl() . $path;
         if (!empty($prefix)) { //如果按照前缀搜索的话
             $apiUrl .= $prefix;
@@ -165,15 +165,23 @@ class Cos
         return $this->parseResponse($request->send());
     }
 
+    /**
+     * 删除节点
+     *
+     * 目录和文件都算是节点的一种，该方法可以用于删除目录或者文件。
+     * 该方法被封装成更加高级的形式，如：deleteDirectory 和 deleteFile
+     * @param string $bucketName
+     * @param string $nodePath
+     * @return boolean 删除成功返回true，删除失败则抛出异常
+     */
     public function deleteNode($bucketName, $nodePath)
     {
-        $path    = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $nodePath;
-        $apiUrl  = $this->getBaseUrl() . $path;
+        $path    = $this->getAbsolutePath($bucketName, $nodePath);
         $body    = [
             'op' => 'delete',
         ];
         $payload = json_encode($body);
-        $request = Request::post($apiUrl, $payload, 'json')->addHeader('authorization',
+        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
             $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
         return $this->parseResponse($request->send());
     }
@@ -181,12 +189,14 @@ class Cos
     public function listDirectory($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10,
         $direction = self::LIST_ORDER_NORMAL)
     {
+        $this->checkDirPath($dirPath);
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_DIR_ONLY, $direction);
     }
 
     public function listFile($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10,
         $direction = self::LIST_ORDER_NORMAL)
     {
+        $this->checkFilePath($filePath);
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_FILE_ONLY, $direction);
     }
 
@@ -227,13 +237,21 @@ class Cos
         return $this->parseResponse($request->send());
     }
 
+    /**
+     * 删除文件
+     * @param string $bucketName
+     * @param string $filePath
+     * @return boolean
+     */
     public function deleteFile($bucketName, $filePath)
     {
-        $this->deleteNode($bucketName, $filePath);
+        $this->checkFilePath($filePath);
+        return $this->deleteNode($bucketName, $filePath);
     }
 
     public function updateFileAttribute($bucketName, $filePath, $bizAttr)
     {
+        $this->checkFilePath($filePath);
         return $this->updateNode($bucketName, $filePath, $bizAttr);
     }
 
@@ -294,12 +312,30 @@ class Cos
         return $this->encode($str, $this->secretKey);
     }
 
-    private function getBaseUrl()
+    protected function getBaseUrl()
     {
         return self::API_SCHEMA . self::API_DOMAIN . self::API_BASE_URL;
     }
 
-    private function buildString($arr)
+    protected function getAbsolutePath($bucketName, $nodePath)
+    {
+        $this->checkBucketName($bucketName);
+        return DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . $nodePath;
+    }
+
+    protected function getAbsoluteDirPath($bucketName, $dirPath)
+    {
+        $this->checkDirPath($dirPath);
+        return $this->getAbsolutePath($bucketName, $dirPath);
+    }
+
+    protected function getAbsoluteFilePath($bucketName, $filePath)
+    {
+        $this->checkFilePath($filePath);
+        return $this->getAbsolutePath($bucketName, $filePath);
+    }
+
+    protected function buildString($arr)
     {
         $str = '';
         foreach ($arr as $k => $v) {
@@ -308,9 +344,30 @@ class Cos
         return rtrim($str, '&');
     }
 
-    private function encode($string, $key)
+    protected function encode($string, $key)
     {
         return base64_encode(hash_hmac('sha1', $string, $key, true) . $string);
+    }
+
+    protected function checkBucketName($bucketName)
+    {
+        if (!preg_match('/^[_0-9a-z]+$/i', $bucketName)) {
+            throw new Exception(Error::ERR_INVALID_PARAM, Error::msg(Error::ERR_INVALID_PARAM));
+        }
+    }
+
+    protected function checkDirPath($dirPath)
+    {
+        if (!preg_match('#(^\/$)|(^\/(.+)\/$)#i', $dirPath)) {
+            throw new Exception(Error::ERR_INVALID_PARAM, Error::msg(Error::ERR_INVALID_PARAM));
+        }
+    }
+
+    protected function checkFilePath($filePath)
+    {
+        if (!preg_match('#^\/(.*)[^/]$#i', $filePath)) {
+            throw new Exception(Error::ERR_INVALID_PARAM, Error::msg(Error::ERR_INVALID_PARAM));
+        }
     }
 
 }
