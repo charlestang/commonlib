@@ -238,9 +238,12 @@ class Cos
     }
 
     /**
-     * @param Response $response
+     * 返回值的解析
+     * @param Response $response Httpful包里，对返回值封装的对象
+     * @return array/boolean  如果返回的是数据，就是一个关联数组，对应返回json的data属性，否则返回true
+     * @throws Exception 如果返回值的code非0，则抛出异常
      */
-    private function parseResponse($response)
+    protected function parseResponse($response)
     {
         if ($response->hasErrors()) {
             if ($response->hasBody()) {
