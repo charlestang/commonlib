@@ -124,7 +124,7 @@ class Cos
         ];
         $payload = json_encode($body);
         $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
-            $this->getAuthorizationSign($bucketName, $path));
+            $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
         return $this->parseResponse($request->send());
     }
 
