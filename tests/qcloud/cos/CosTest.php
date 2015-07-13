@@ -93,20 +93,6 @@ class CosTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * case 3: 测试创建一个已经存在的同名目录
-     * @depends testCreateAWholeNewDirectory
-     */
-    public function testOverwriteADirectory()
-    {
-        try {
-            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new/', '', Cos::OVERWRITE);
-            $this->assertArrayHasKey('ctime', $result);
-        } catch (Exception $ex) {
-            $this->fail('Failed! Case: "覆盖一个同名的空目录" Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
-        }
-    }
-
-    /**
      * case 4: 创建一个带有属性的不存在的目录
      * @depends testClearData
      */
@@ -122,26 +108,29 @@ class CosTest extends PHPUnit_Framework_TestCase
         
     }
 
+    /**
+     * 测试上传一个文件
+     */
+    public function testUploadFile()
+    {
+        $cos      = new Cos();
+        $filename = __DIR__ . '/test_upload.txt';
+        try {
+            $result = $cos->uploadFile(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/test.txt', $filename);
+            $this->assertArrayHasKey('access_url', $result);
+            $this->assertArrayHasKey('url', $result);
+            $this->assertArrayHasKey('resource_path', $result);
+        } catch (Exception $ex) {
+            $this->fail('Failed! Case: "上传一个文件"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
+    }
+
     protected function deleteDirectory($dirPath)
     {
         try {
             $this->assertTrue($this->cos->deleteDirectory(self::UNIT_TEST_BUCKET, $dirPath));
         } catch (Exception $ex) {
             $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
-        }
-    }
-
-    public function testUploadFile()
-    {
-        $cos      = new Cos();
-        $filename = __DIR__ . '/test_upload.txt';
-        try {
-//$result = $cos->uploadFile('test', 'test.txt', $filename);
-//var_dump($result);
-            $res2 = $cos->deleteFile('test', 'test.txt');
-            var_dump($res2);
-        } catch (Exception $ex) {
-            var_dump($ex->getCode(), $ex->getMessage());
         }
     }
 

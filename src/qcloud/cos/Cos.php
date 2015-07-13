@@ -24,9 +24,6 @@ class Cos
     const API_SCHEMA             = 'http://';
     const API_DOMAIN             = 'web.file.myqcloud.com';
     const API_BASE_URL           = '/files/v1';
-    //是否覆盖
-    const OVERWRITE              = 1;
-    const NON_OVERWRITE          = 0;
     //签名类型
     const SIGN_TYPE_ONCE         = 1; //一次有效
     const SIGN_TYPE_MULT         = 2; //多次有效
@@ -68,12 +65,11 @@ class Cos
      * @param int    $overwrite    如果目录已经存在，是否覆盖
      * @return array 返回数组，键 ctime 记录目录创建时间
      */
-    public function createDirectory($bucketName, $dirPath, $attribute = '', $overwrite = self::NON_OVERWRITE)
+    public function createDirectory($bucketName, $dirPath, $attribute = '')
     {
         $path = $this->getAbsoluteDirPath($bucketName, $dirPath);
         $body = [
             'op'            => 'create',
-            'to_over_write' => $overwrite,
         ];
         if (!empty($attribute)) {
             $body['biz_attr'] = $attribute;
@@ -215,10 +211,17 @@ class Cos
         return $exists;
     }
 
+    /**
+     * 上传一个完整的文件
+     * @param string $bucketName bucket的名字
+     * @param string $filePath   云端文件的绝对路径
+     * @param string $filename   文件在本地服务器的绝对路径
+     * @param string $attribute  自定义文件属性
+     * @return array
+     */
     public function uploadFile($bucketName, $filePath, $filename, $attribute = '')
     {
-        $path   = DIRECTORY_SEPARATOR . $this->appId . DIRECTORY_SEPARATOR . $bucketName . DIRECTORY_SEPARATOR . $filePath;
-        $apiUrl = $this->getBaseUrl() . $path;
+        $path = $this->getAbsoluteFilePath($bucketName, $filePath);
 
         $fd       = fopen($filename, 'rb');
         $contents = fread($fd, filesize($filename));
@@ -232,8 +235,7 @@ class Cos
         if (!empty($attribute)) {
             $body['biz_attr'] = $attribute;
         }
-        $request = Request::post($apiUrl, $body, Mime::UPLOAD)->expects('json')->addHeader('authorization',
-            $this->getAuthorizationSign($bucketName, $path));
+        $request = Request::post($this->getBaseUrl() . $path, $body, Mime::UPLOAD)->expects('json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path));
         return $this->parseResponse($request->send());
     }
 
