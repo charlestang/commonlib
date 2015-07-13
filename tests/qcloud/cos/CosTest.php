@@ -99,7 +99,7 @@ class CosTest extends PHPUnit_Framework_TestCase
     public function testOverwriteADirectory()
     {
         try {
-            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, 'test_create_new/', '', Cos::OVERWRITE);
+            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new/', '', Cos::OVERWRITE);
             $this->assertArrayHasKey('ctime', $result);
         } catch (Exception $ex) {
             $this->fail('Failed! Case: "覆盖一个同名的空目录" Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
