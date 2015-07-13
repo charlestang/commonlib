@@ -1,6 +1,7 @@
 <?php
 
 use \charlestang\commonlib\qcloud\cos\Cos;
+use \charlestang\commonlib\qcloud\cos\Error;
 
 if (file_exists(__DIR__ . '/define.php')) {
     require __DIR__ . '/define.php';
@@ -68,34 +69,57 @@ class CosTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * case 1: 创建一个全新的不存在的目录
      * @depends testClearData
      */
-    public function testCreateDirectory()
+    public function testCreateAWholeNewDirectory()
     {
-        //case 1: 创建一个全新的不存在的目录
         try {
-            $result1 = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new/');
-            $this->assertArrayHasKey('ctime', $result1);
-        } catch (Exception $ex) {
-            $this->fail('Failed! Case: "create a new empty directory" Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
-        }
-
-        //case 2: 创建一个带有属性的不存在的目录
-        try {
-            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/', 'attr:rwxrwxrwx|user:123|group:234');
+            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new/');
             $this->assertArrayHasKey('ctime', $result);
         } catch (Exception $ex) {
-            $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+            $this->fail('Failed! Case: "创建一个全新的空目录" Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
         }
+    }
+
+    /**
+     * case2: 创建一个同名的目录
+     * @depends testCreateAWholeNewDirectory
+     */
+    public function testCreateAlreadyExistsDirectory()
+    {
+        $this->setExpectedExceptionRegExp('\charlestang\commonlib\qcloud\cos\Exception', '/.*/', Error::ERR_PATH_CONFLICT);
+        $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new/');
+    }
+
+    /**
+     * case 3: 测试创建一个已经存在的同名目录
+     * @depends testCreateAWholeNewDirectory
+     */
+    public function testOverwriteADirectory()
+    {
         try {
-            if ($result['ctime']) {
-//case 2: 测试创建一个已经存在的同名目录
-//$result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, 'test_create_new/', 'abcde', Cos::OVERWRITE);
-//$this->assertArrayHasKey('ctime', $result);
-            }
+            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, 'test_create_new/', '', Cos::OVERWRITE);
+            $this->assertArrayHasKey('ctime', $result);
         } catch (Exception $ex) {
-            $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+            $this->fail('Failed! Case: "覆盖一个同名的空目录" Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
         }
+    }
+
+    /**
+     * case 4: 创建一个带有属性的不存在的目录
+     * @depends testClearData
+     */
+    public function testCreateADirectoryWithAttribute()
+    {
+
+        try {
+            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/', 'attr:rwxrwxrwx|uid:123|gid:234');
+            $this->assertArrayHasKey('ctime', $result);
+        } catch (Exception $ex) {
+            $this->fail('Failed! Case: "创建一个带有属性的新目录"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
+        
     }
 
     protected function deleteDirectory($dirPath)
