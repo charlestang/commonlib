@@ -168,8 +168,10 @@ class CosTest extends PHPUnit_Framework_TestCase
                     }
                 }
             }
-            $deletResult = $this->cos->deleteDirectory(self::UNIT_TEST_BUCKET, $dirPath);
-            $this->assertTrue($deletResult);
+            if ($dirPath != '/') {
+                $deleteResult = $this->cos->deleteDirectory(self::UNIT_TEST_BUCKET, $dirPath);
+                $this->assertTrue($deleteResult);
+            }
         } catch (Exception $ex) {
             var_dump($ex->getTraceAsString());
             $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());

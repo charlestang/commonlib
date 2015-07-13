@@ -89,6 +89,9 @@ class Cos
     public function deleteDirectory($bucketName, $dirPath)
     {
         $this->checkDirPath($dirPath);
+        if ($dirPath == '/') {
+            throw new Exception(Error::ERR_CANNOT_DELETE_ROOT, Error::msg(Error::ERR_CANNOT_DELETE_ROOT));
+        }
         return $this->deleteNode($bucketName, $dirPath);
     }
 

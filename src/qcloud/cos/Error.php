@@ -11,6 +11,7 @@ class Error
 {
 
     const ERR_INVALID_PARAM       = -100001;
+    const ERR_CANNOT_DELETE_ROOT  = -100100;
     const ERR_INDEX_NOT_FOUND     = -166;
     const ERR_DIRECTORY_NOT_EMPTY = -173;
     const ERR_PATH_CONFLICT       = -178;
@@ -18,6 +19,7 @@ class Error
 
     protected static $msgs = [
         self::ERR_INVALID_PARAM => '参数格式错误',
+        self::ERR_CANNOT_DELETE_ROOT => '请勿删除一个bucket下的根目录，会导致bucket被删除',
     ];
 
     public static function msg($code)
