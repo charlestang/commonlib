@@ -2,7 +2,11 @@
 
 use \charlestang\commonlib\qcloud\cos\Cos;
 
-require __DIR__ . '/define.php';
+if (file_exists(__DIR__ . '/define.php')) {
+    require __DIR__ . '/define.php';
+} else {
+    die("Please create a file define.php to set your APP_ID, SECRET_ID, SECRET_KEY.");
+}
 
 /**
  * Test Cases of Cos
@@ -78,8 +82,7 @@ class CosTest extends PHPUnit_Framework_TestCase
 
         //case 2: 创建一个带有属性的不存在的目录
         try {
-            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/',
-                'attr:rwxrwxrwx|user:123|group:234');
+            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/', 'attr:rwxrwxrwx|user:123|group:234');
             $this->assertArrayHasKey('ctime', $result);
         } catch (Exception $ex) {
             $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
@@ -133,12 +136,8 @@ class CosTest extends PHPUnit_Framework_TestCase
             'sGvpRjsnRVwIu07xIYjDR2t8/sxhPTEwMDAwMzImaz1BS0lEUW9mSTlYOXh2UU91MGM1S1Q0RHIzd0xGV0hrY1I4WVYmZT0wJnQ9MTQzNDU0NDM4OCZyPTQxOTc0OTQ0OSZmPS8xMDAwMDMyL3Rlc3RfcWNsb3VkX2FwcGlkL3Rlc3QudHh0JmI9dGVzdF9xY2xvdWRfYXBwaWQ=', //单次有效签名
         ];
         $actual   = [
-            $method->invoke($cos,
-                'a=1000032&k=AKIDQofI9X9xvQOu0c5KT4Dr3wLFWHkcR8YV&e=1437136774&t=1434544774&r=917470780&f=&b=test_qcloud_appid',
-                'hdBMz8k3cum0k6rD8PGdRojTMrpHHorX'),
-            $method->invoke($cos,
-                'a=1000032&k=AKIDQofI9X9xvQOu0c5KT4Dr3wLFWHkcR8YV&e=0&t=1434544388&r=419749449&f=/1000032/test_qcloud_appid/test.txt&b=test_qcloud_appid',
-                'hdBMz8k3cum0k6rD8PGdRojTMrpHHorX'),
+            $method->invoke($cos, 'a=1000032&k=AKIDQofI9X9xvQOu0c5KT4Dr3wLFWHkcR8YV&e=1437136774&t=1434544774&r=917470780&f=&b=test_qcloud_appid', 'hdBMz8k3cum0k6rD8PGdRojTMrpHHorX'),
+            $method->invoke($cos, 'a=1000032&k=AKIDQofI9X9xvQOu0c5KT4Dr3wLFWHkcR8YV&e=0&t=1434544388&r=419749449&f=/1000032/test_qcloud_appid/test.txt&b=test_qcloud_appid', 'hdBMz8k3cum0k6rD8PGdRojTMrpHHorX'),
         ];
 
         $this->assertEquals($expected, $actual);
