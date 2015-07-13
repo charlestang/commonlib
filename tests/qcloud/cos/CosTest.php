@@ -57,15 +57,7 @@ class CosTest extends PHPUnit_Framework_TestCase
      */
     public function testClearData()
     {
-        $emptyDirectories = [
-            '/test_create_new/',
-            '/test_create_new_with_attr/',
-        ];
-        foreach ($emptyDirectories as $dir) {
-            if ($this->testDirectoryExists($dir)) {
-                $this->deleteDirectory($dir);
-            }
-        }
+        $this->deleteDirectoryRecursively('/');
     }
 
     /**
@@ -105,23 +97,48 @@ class CosTest extends PHPUnit_Framework_TestCase
         } catch (Exception $ex) {
             $this->fail('Failed! Case: "创建一个带有属性的新目录"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
         }
-        
     }
 
     /**
      * 测试上传一个文件
+     * @depends testCreateADirectoryWithAttribute
      */
     public function testUploadFile()
     {
-        $cos      = new Cos();
         $filename = __DIR__ . '/test_upload.txt';
         try {
-            $result = $cos->uploadFile(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/test.txt', $filename);
+            $result = $this->cos->uploadFile(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/test.txt', $filename);
             $this->assertArrayHasKey('access_url', $result);
             $this->assertArrayHasKey('url', $result);
             $this->assertArrayHasKey('resource_path', $result);
         } catch (Exception $ex) {
             $this->fail('Failed! Case: "上传一个文件"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
+    }
+
+    /**
+     * @depends testUploadFile
+     */
+    public function testUpdateFileAttribute()
+    {
+        try {
+            $result = $this->cos->updateFileAttribute(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/test.txt', 'attr:rwx------|uid:123:gid:234');
+            $this->assertTrue($result);
+        } catch (Exception $ex) {
+            $this->fail('Failed! Case: "更新一个文件的属性"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
+    }
+
+    /**
+     * @depends testUploadFile
+     */
+    public function testDeleteFile()
+    {
+        try {
+            $result = $this->cos->deleteFile(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/test.txt');
+            $this->assertTrue($result);
+        } catch (Exception $ex) {
+            $this->fail('Failed! Case: "删除一个文件"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
         }
     }
 
@@ -134,7 +151,32 @@ class CosTest extends PHPUnit_Framework_TestCase
         }
     }
 
-//<editor-fold defaultstate="collapsed" desc="测试签名编码算法">
+    protected function deleteDirectoryRecursively($dirPath)
+    {
+        try {
+            $result = $this->cos->lsNode(self::UNIT_TEST_BUCKET, $dirPath);
+            $this->assertArrayHasKey('dircount', $result);
+            $this->assertArrayHasKey('filecount', $result);
+            $this->assertArrayHasKey('infos', $result);
+            if ($result['dircount'] > 0 || $result['filecount'] > 0) {
+                foreach ($result['infos'] as $info) {
+                    if (isset($info['sha'])) {
+                        $deleteResult = $this->cos->deleteFile(self::UNIT_TEST_BUCKET, $dirPath . $info['name']);
+                        $this->assertTrue($deleteResult);
+                    } else {
+                        $this->deleteDirectoryRecursively($dirPath . $info['name'] . '/');
+                    }
+                }
+            }
+            $deletResult = $this->cos->deleteDirectory(self::UNIT_TEST_BUCKET, $dirPath);
+            $this->assertTrue($deletResult);
+        } catch (Exception $ex) {
+            var_dump($ex->getTraceAsString());
+            $this->fail('Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="测试签名编码算法">
     /**
      * 测试腾讯云的签名编码算法，现在算法使用的数据，是文档的范例数据，所使用的范例数据日期是2015-07-11日，如果日后有任何变化，
      * 可以参考该用例中的快照对比。
@@ -156,5 +198,5 @@ class CosTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-//</editor-fold>
+    //</editor-fold>
 }

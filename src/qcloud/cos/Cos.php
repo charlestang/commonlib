@@ -251,6 +251,13 @@ class Cos
         return $this->deleteNode($bucketName, $filePath);
     }
 
+    /**
+     * 更新文件的附加属性
+     * @param string $bucketName
+     * @param string $filePath
+     * @param string $bizAttr
+     * @return boolean
+     */
     public function updateFileAttribute($bucketName, $filePath, $bizAttr)
     {
         $this->checkFilePath($filePath);
