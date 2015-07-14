@@ -255,6 +255,13 @@ class Cos
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_FILE_ONLY, $direction);
     }
 
+    /**
+     * 判定一个节点是否存在
+     * @param string $bucketName
+     * @param string $nodePath
+     * @return boolean
+     * @throws \charlestang\commonlib\qcloud\cos\Exception
+     */
     public function nodeExists($bucketName, $nodePath)
     {
         $exists = true;
