@@ -101,6 +101,7 @@ class CosTest extends PHPUnit_Framework_TestCase
 
     /**
      * case 5: 测试读取文件夹属性
+     * @depends testCreateADirectoryWithAttribute
      */
     public function testReadDirectoryAttribute()
     {
@@ -128,6 +129,15 @@ class CosTest extends PHPUnit_Framework_TestCase
         } catch (Exception $ex) {
             $this->fail('Failed! Case: "上传一个文件"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
         }
+    }
+
+    /**
+     * 测试文件是否存在的API
+     * @depends testUploadFile
+     */
+    public function testFileExists()
+    {
+        $this->assertTrue($this->cos->fileExists(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/test.txt'));
     }
 
     /**
