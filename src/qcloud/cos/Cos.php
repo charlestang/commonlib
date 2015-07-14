@@ -69,14 +69,13 @@ class Cos
     {
         $path = $this->getAbsoluteDirPath($bucketName, $dirPath);
         $body = [
-            'op'            => 'create',
+            'op' => 'create',
         ];
         if (!empty($attribute)) {
             $body['biz_attr'] = $attribute;
         }
         $payload = json_encode($body);
-        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
-            $this->getAuthorizationSign($bucketName, $path));
+        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path));
         return $this->parseResponse($request->send());
     }
 
@@ -123,8 +122,7 @@ class Cos
             'biz_attr' => $bizAttr,
         ];
         $payload = json_encode($body);
-        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
-            $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
+        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
         return $this->parseResponse($request->send());
     }
 
@@ -140,8 +138,7 @@ class Cos
      *
      * @return type
      */
-    public function lsNode($bucketName, $nodePath, $prefix = '', $offset = '', $pageSize = 10,
-        $pattern = self::LIST_PATTERN_BOTH, $direction = self::LIST_ORDER_NORMAL)
+    public function lsNode($bucketName, $nodePath, $prefix = '', $offset = '', $pageSize = 10, $pattern = self::LIST_PATTERN_BOTH, $direction = self::LIST_ORDER_NORMAL)
     {
         $path   = $this->getAbsolutePath($bucketName, $nodePath);
         $apiUrl = $this->getBaseUrl() . $path;
@@ -165,6 +162,48 @@ class Cos
     }
 
     /**
+     * 查询一个节点的属性
+     * @param string $bucketName
+     * @param string $nodePath     路径名，以 / 结尾
+     * @return array
+     */
+    public function statNode($bucketName, $nodePath)
+    {
+        $path    = $this->getAbsolutePath($bucketName, $nodePath);
+        $apiUrl  = $this->getBaseUrl() . $path;
+        $query   = [
+            'op' => 'stat',
+        ];
+        $apiUrl .= '?' . http_build_query($query);
+        $request = Request::get($apiUrl, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path));
+        return $this->parseResponse($request->send());
+    }
+
+    /**
+     * 查询一个目录的属性
+     * @param string $bucketName
+     * @param string $dirPath     路径名，以 / 结尾
+     * @return array
+     */
+    public function statDirectory($bucketName, $dirPath)
+    {
+        $this->checkDirPath($dirPath);
+        return $this->statNode($bucketName, $dirPath);
+    }
+
+    /**
+     * 查询一个文件的属性
+     * @param string $bucketName
+     * @param string $filePath     路径名
+     * @return array
+     */
+    public function statFile($bucketName, $filePath)
+    {
+        $this->checkFilePath($filePath);
+        return $this->statNode($bucketName, $filePath);
+    }
+
+    /**
      * 删除节点
      *
      * 目录和文件都算是节点的一种，该方法可以用于删除目录或者文件。
@@ -180,20 +219,17 @@ class Cos
             'op' => 'delete',
         ];
         $payload = json_encode($body);
-        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
-            $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
+        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
         return $this->parseResponse($request->send());
     }
 
-    public function listDirectory($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10,
-        $direction = self::LIST_ORDER_NORMAL)
+    public function listDirectory($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10, $direction = self::LIST_ORDER_NORMAL)
     {
         $this->checkDirPath($dirPath);
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_DIR_ONLY, $direction);
     }
 
-    public function listFile($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10,
-        $direction = self::LIST_ORDER_NORMAL)
+    public function listFile($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10, $direction = self::LIST_ORDER_NORMAL)
     {
         $this->checkDirPath($dirPath);
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_FILE_ONLY, $direction);

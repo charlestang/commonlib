@@ -100,6 +100,20 @@ class CosTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * case 5: 测试读取文件夹属性
+     */
+    public function testReadDirectoryAttribute()
+    {
+        try {
+            $result = $this->cos->statDirectory(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/');
+            $this->assertArrayHasKey('biz_attr', $result);
+            $this->assertEquals('attr:rwxrwxrwx|uid:123|gid:234', $result['biz_attr']);
+        } catch (Exception $ex) {
+            $this->fail('Failed! Case: "读取一个目录的属性"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
+    }
+
+    /**
      * 测试上传一个文件
      * @depends testCreateADirectoryWithAttribute
      */
