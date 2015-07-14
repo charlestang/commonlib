@@ -223,23 +223,43 @@ class Cos
         return $this->parseResponse($request->send());
     }
 
+    /**
+     * 罗列一个目录下的所有目录，带分页
+     * @param string $bucketName
+     * @param string $dirPath
+     * @param string $prefix
+     * @param int $offset
+     * @param int $pageSize
+     * @param int $direction
+     * @return array
+     */
     public function listDirectory($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10, $direction = self::LIST_ORDER_NORMAL)
     {
         $this->checkDirPath($dirPath);
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_DIR_ONLY, $direction);
     }
 
+    /**
+     * 罗列一个目录下的所有文件，带分页
+     * @param string $bucketName
+     * @param string $dirPath
+     * @param string $prefix
+     * @param int $offset
+     * @param int $pageSize
+     * @param int $direction
+     * @return array
+     */
     public function listFile($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10, $direction = self::LIST_ORDER_NORMAL)
     {
         $this->checkDirPath($dirPath);
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_FILE_ONLY, $direction);
     }
 
-    public function directoryExists($bucketName, $dirPath)
+    public function nodeExists($bucketName, $nodePath)
     {
         $exists = true;
         try {
-            $this->listDirectory($bucketName, $dirPath);
+            $this->statNode($bucketName, $nodePath);
         } catch (Exception $ex) {
             if ($ex->getCode() == Error::ERR_INDEX_NOT_FOUND) {
                 $exists = false;
@@ -247,7 +267,20 @@ class Cos
                 throw $ex;
             }
         }
+
         return $exists;
+    }
+
+    public function directoryExists($bucketName, $dirPath)
+    {
+        $this->checkDirPath($dirPath);
+        return $this->nodeExists($bucketName, $dirPath);
+    }
+
+    public function fileExists($bucketName, $filePath)
+    {
+        $this->checkFilePath($filePath);
+        return $this->nodeExists($bucketName, $filePath);
     }
 
     /**
@@ -325,6 +358,8 @@ class Cos
         }
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Signature">
+
     /**
      * 生成授权签名
      * @param string $bucketName
@@ -360,6 +395,8 @@ class Cos
         return $this->encode($str, $this->secretKey);
     }
 
+    // </editor-fold>
+    //<editor-fold defaultstate="collapse" desc="Helpers">
     protected function getBaseUrl()
     {
         return self::API_SCHEMA . self::API_DOMAIN . self::API_BASE_URL;
@@ -418,4 +455,5 @@ class Cos
         }
     }
 
+    //</editor-fold>
 }
