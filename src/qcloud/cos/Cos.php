@@ -195,7 +195,7 @@ class Cos
     public function listFile($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10,
         $direction = self::LIST_ORDER_NORMAL)
     {
-        $this->checkFilePath($filePath);
+        $this->checkDirPath($dirPath);
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_FILE_ONLY, $direction);
     }
 
