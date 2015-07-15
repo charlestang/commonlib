@@ -76,7 +76,7 @@ class Cos
         }
         $payload = json_encode($body);
         $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path));
-        return $this->parseResponse($request->send());
+        return $this->doRequest($request);
     }
 
     /**
@@ -123,7 +123,7 @@ class Cos
         ];
         $payload = json_encode($body);
         $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
-        return $this->parseResponse($request->send());
+        return $this->doRequest($request);
     }
 
     /**
@@ -158,7 +158,7 @@ class Cos
         $apiUrl .= '?' . http_build_query($query);
 
         $request = Request::get($apiUrl, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path));
-        return $this->parseResponse($request->send());
+        return $this->doRequest($request);
     }
 
     /**
@@ -176,7 +176,7 @@ class Cos
         ];
         $apiUrl .= '?' . http_build_query($query);
         $request = Request::get($apiUrl, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path));
-        return $this->parseResponse($request->send());
+        return $this->doRequest($request);
     }
 
     /**
@@ -220,7 +220,7 @@ class Cos
         ];
         $payload = json_encode($body);
         $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
-        return $this->parseResponse($request->send());
+        return $this->doRequest($request);
     }
 
     /**
@@ -278,12 +278,24 @@ class Cos
         return $exists;
     }
 
+    /**
+     * 目录是否存在
+     * @param string $bucketName
+     * @param string $dirPath
+     * @return bolean
+     */
     public function directoryExists($bucketName, $dirPath)
     {
         $this->checkDirPath($dirPath);
         return $this->nodeExists($bucketName, $dirPath);
     }
 
+    /**
+     * 文件是否存在
+     * @param string $bucketName
+     * @param string $filePath
+     * @return boolean
+     */
     public function fileExists($bucketName, $filePath)
     {
         $this->checkFilePath($filePath);
@@ -315,7 +327,7 @@ class Cos
             $body['biz_attr'] = $attribute;
         }
         $request = Request::post($this->getBaseUrl() . $path, $body, Mime::UPLOAD)->expects('json')->addHeader('authorization', $this->getAuthorizationSign($bucketName, $path));
-        return $this->parseResponse($request->send());
+        return $this->doRequest($request);
     }
 
     /**
@@ -344,13 +356,17 @@ class Cos
     }
 
     /**
-     * 返回值的解析
-     * @param Response $response Httpful包里，对返回值封装的对象
-     * @return array/boolean  如果返回的是数据，就是一个关联数组，对应返回json的data属性，否则返回true
-     * @throws Exception 如果返回值的code非0，则抛出异常
+     * 
+     * @param \Httpful\Request $request
      */
-    protected function parseResponse($response)
+    public function doRequest($request)
     {
+        try {
+            $response = $request->send();
+        } catch (\Exception $ex) {
+            throw new Exception(Error::ERR_CONNECTION_ERROR, Error::msg(Error::ERR_CONNECTION_ERROR));
+        }
+        /* @var $response /Httpful/Response */
         if ($response->hasErrors()) {
             if ($response->hasBody()) {
                 throw new Exception($response->body['code'], $response->body['message']);
