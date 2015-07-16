@@ -19,8 +19,8 @@ class LogDbTest extends PHPUnit_Framework_TestCase
 
         $logdb = charlestang\commonlib\logdb\LogDb::getInstance('172.16.57.128', '22060', $conf);
         $ret   = $logdb->send([
-            'key_name'  => 'test_key',
-            'key_value' => 'test_value',
+            'key_name'  => 'this is a test to key insert',
+            'key_value' => 'this the body value of test content',
         ]);
 
         $this->assertTrue($ret);
