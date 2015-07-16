@@ -20,18 +20,18 @@ class LogDb
         $this->conf = $conf;
     }
 
-    protected function key()
+    protected static function key($ip, $port)
     {
-        return $this->ip . ':' . $this->port;
+        return $ip . ':' . $port;
     }
 
     public static function getInstance($ip, $port, $conf = [])
     {
-        if (isset(self::$instances[$this->key()])) {
-            return self::$instances[$this->key()];
+        if (isset(self::$instances[self::key($ip, $port)])) {
+            return self::$instances[self::key($ip, $port)];
         }
         $instance                          = new self($ip, $port, $conf);
-        self::$instances[$instance->key()] = $instance;
+        self::$instances[self::key($ip, $port)] = $instance;
         return $instance;
     }
 
