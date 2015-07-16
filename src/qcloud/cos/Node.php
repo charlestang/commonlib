@@ -1,15 +1,19 @@
 <?php
+
 namespace charlestang\commonlib\qcloud\cos;
+
 /**
- * Description of newPHPClass
+ * 腾讯云COS面向对象接口封装
  *
- * @author charles
+ * @author Charles Tang <charlestang@foxmail.com>
  */
 class Node
 {
+
     public $name;
     public $attribute;
     public $createTime;
     public $modifyTime;
     public $url;
+
 }

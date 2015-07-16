@@ -5,7 +5,7 @@ namespace charlestang\commonlib\qcloud\cos;
 /**
  * Description of newPHPClass
  *
- * @author charles
+ * @author Charles Tang <charlestang@foxmail.com>
  */
 class File extends Node
 {
