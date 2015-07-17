@@ -11,7 +11,7 @@ class LogDbTest extends PHPUnit_Framework_TestCase
     public function testSend()
     {
         $conf = [
-            'test_id'        => 'int',
+            'test_id'   => 'int',
             'key_name'  => 'varchar',
             'key_value' => 'text',
             'update'    => 'datetime',
