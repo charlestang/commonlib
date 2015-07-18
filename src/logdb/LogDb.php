@@ -10,7 +10,7 @@ class LogDb
 
     protected $ip;
     protected $port;
-    protected $conf = [];
+    protected $conf             = [];
     protected static $instances = [];
 
     protected function __construct($ip, $port, $conf)
@@ -27,11 +27,14 @@ class LogDb
 
     public static function getInstance($ip, $port, $conf = [])
     {
-        if (isset(self::$instances[self::key($ip, $port)])) {
-            return self::$instances[self::key($ip, $port)];
+        $instance = null;
+        $key      = self::key($ip, $port);
+        if (isset(self::$instances[$key])) {
+            $instance = self::$instances[$key];
+        } else {
+            $instance              = new self($ip, $port, $conf);
+            self::$instances[$key] = $instance;
         }
-        $instance                          = new self($ip, $port, $conf);
-        self::$instances[self::key($ip, $port)] = $instance;
         return $instance;
     }
 
@@ -104,7 +107,8 @@ class LogDb
                         $gmp_h = gmp_div($gmp_v, $gmp_32bit_max);
                         $gmp_l = gmp_mod($gmp_v, $gmp_32bit_max);
 
-                        $bin .= pack('N*N*', sprintf('%d', (float) gmp_strval($gmp_h)), sprintf('%d', (float) gmp_strval($gmp_l)));
+                        $bin .= pack('N*N*', sprintf('%d', (float) gmp_strval($gmp_h)),
+                            sprintf('%d', (float) gmp_strval($gmp_l)));
                         break;
 
                     case 'ubigint':
@@ -114,7 +118,8 @@ class LogDb
                         $gmp_h = gmp_div($gmp_v, $gmp_32bit_max); // 高位
                         $gmp_l = gmp_mod($gmp_v, $gmp_32bit_max); // 低位
 
-                        $bin .= pack('N*N*', sprintf('%d', (float) gmp_strval($gmp_h)), sprintf('%d', (float) gmp_strval($gmp_l)));
+                        $bin .= pack('N*N*', sprintf('%d', (float) gmp_strval($gmp_h)),
+                            sprintf('%d', (float) gmp_strval($gmp_l)));
                         break;
 
                     case 'float':
