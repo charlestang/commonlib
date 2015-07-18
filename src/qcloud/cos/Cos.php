@@ -6,7 +6,6 @@ use \Httpful\Handlers\JsonHandler;
 use \Httpful\Httpful;
 use \Httpful\Mime;
 use \Httpful\Request;
-use \Httpful\Response;
 
 defined('COS_APP_ID') or define('COS_APP_ID', 0);
 defined('COS_SECRET_ID') or define('COS_SECRET_ID', 0);
@@ -356,7 +355,7 @@ class Cos
     }
 
     /**
-     * 
+     *
      * @param \Httpful\Request $request
      */
     public function doRequest($request)
@@ -419,7 +418,7 @@ class Cos
     }
 
     // </editor-fold>
-    //<editor-fold defaultstate="collapse" desc="Helpers">
+    //<editor-fold defaultstate="collapsed" desc="Helpers">
     protected function getBaseUrl()
     {
         return self::API_SCHEMA . self::API_DOMAIN . self::API_BASE_URL;
