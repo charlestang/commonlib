@@ -3,7 +3,7 @@
 namespace charlestang\commonlib\qcloud\cos;
 
 /**
- * Description of newPHPClass
+ * 对文件的抽象封装
  *
  * @author Charles Tang <charlestang@foxmail.com>
  */
