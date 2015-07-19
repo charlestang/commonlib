@@ -156,6 +156,22 @@ class CosTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends testFileExists
+     */
+    public function testStatFile()
+    {
+        try {
+            $result = $this->cos->statFile(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/test.txt');
+            $this->assertArrayHasKey('ctime', $result);
+            $this->assertArrayHasKey('filesize', $result);
+            $this->assertArrayHasKey('name', $result);
+            $this->assertEquals('test.txt', $result['name']);
+        } catch (Exception $ex) {
+            $this->fail('Failed! Case: "读取一个文件的信息"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
+    }
+
+    /**
      * @depends testUploadFile
      */
     public function testUpdateFileAttribute()
