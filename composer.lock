@@ -229,12 +229,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "df88fdf48a61af29cc309545f9c8d425c63b8852"
+                "reference": "1ba1290e47c3275be779967de1516e2989b6e130"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/df88fdf48a61af29cc309545f9c8d425c63b8852",
-                "reference": "df88fdf48a61af29cc309545f9c8d425c63b8852",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/1ba1290e47c3275be779967de1516e2989b6e130",
+                "reference": "1ba1290e47c3275be779967de1516e2989b6e130",
                 "shasum": ""
             },
             "require": {
@@ -283,7 +283,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-06-21 07:51:27"
+            "time": "2015-07-13 11:25:16"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -536,73 +536,17 @@
             "time": "2015-06-30 06:53:57"
         },
         {
-            "name": "phpunit/phpunit-mock-objects",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "e4862226480f86ea18ef773212ec1e2acd42ba64"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/e4862226480f86ea18ef773212ec1e2acd42ba64",
-                "reference": "e4862226480f86ea18ef773212ec1e2acd42ba64",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/instantiator": "~1.0,>=1.0.2",
-                "php": ">=5.3.3",
-                "phpunit/php-text-template": "~1.2",
-                "sebastian/exporter": "~1.2"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.4"
-            },
-            "suggest": {
-                "ext-soap": "*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.3.x-dev"
-                }
-            },
-            "autoload": {
-                "classmap": [
-                    "src/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sb@sebastian-bergmann.de",
-                    "role": "lead"
-                }
-            ],
-            "description": "Mock Object library for PHPUnit",
-            "homepage": "https://github.com/sebastianbergmann/phpunit-mock-objects/",
-            "keywords": [
-                "mock",
-                "xunit"
-            ],
-            "time": "2015-07-04 15:35:39"
-        },
-        {
             "name": "sebastian/comparator",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/comparator.git",
-                "reference": "abd05e77d364138c0532a1b78a13c4d78311f546"
+                "reference": "dee3fd1828677b2182c076ad2caecbb5c7bdbf1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/abd05e77d364138c0532a1b78a13c4d78311f546",
-                "reference": "abd05e77d364138c0532a1b78a13c4d78311f546",
+                "url": "https://api.github.com/repos/sebastianbergmann/comparator/zipball/dee3fd1828677b2182c076ad2caecbb5c7bdbf1c",
+                "reference": "dee3fd1828677b2182c076ad2caecbb5c7bdbf1c",
                 "shasum": ""
             },
             "require": {
@@ -653,7 +597,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2015-06-21 07:54:35"
+            "time": "2015-07-19 12:54:49"
         },
         {
             "name": "sebastian/diff",
