@@ -1,6 +1,7 @@
 {
     "name": "charlestang/commonlib",
     "description": "Some common helper classes.",
+    "homepage": "http://github.com/charlestang/commonlib",
     "type": "library",
     "require-dev": {
         "phpunit/phpunit": "4.7.6"
@@ -9,7 +10,8 @@
     "authors": [
         {
             "name": "Charles Tang",
-            "email": "charlestang@foxmail.com"
+            "email": "charlestang@foxmail.com",
+            "homepage" : "http://sexywp.com"
         }
     ],
     "minimum-stability": "dev",
