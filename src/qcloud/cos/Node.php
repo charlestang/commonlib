@@ -16,4 +16,11 @@ class Node
     public $modifyTime;
     public $url;
 
+    protected $cos;
+
+    public function __construct()
+    {
+
+    }
+
 }

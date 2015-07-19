@@ -115,6 +115,21 @@ class CosTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @depends testCreateADirectoryWithAttribute
+     */
+    public function testCreateDirectoryLevel2()
+    {
+        try {
+            $result = $this->cos->createDirectory(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/sub_directory/');
+            $this->assertArrayHasKey('ctime', $result);
+            $stat = $this->cos->statDirectory(self::UNIT_TEST_BUCKET, '/test_create_new_with_attr/sub_directory/');
+            $this->assertEquals('sub_directory', $stat['name']);
+        } catch (Exception $ex) {
+            $this->fail('Failed! Case: "创建一个二级目录，并读出属性"  Code: ' . $ex->getCode() . ' Msg: ' . $ex->getMessage());
+        }
+    }
+
+    /**
      * 测试上传一个文件
      * @depends testCreateADirectoryWithAttribute
      */
