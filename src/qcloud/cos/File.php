@@ -10,8 +10,27 @@ namespace charlestang\commonlib\qcloud\cos;
 class File extends Node
 {
 
+    /**
+     * 文件的大小
+     * @var int
+     */
     public $size;
+
+    /**
+     * 文件的哈希值
+     * @var string
+     */
     public $sha;
+
+    /**
+     * 文件的访问URL
+     * @var string
+     */
     public $url;
+
+    public function parentDirectory()
+    {
+
+    }
 
 }
