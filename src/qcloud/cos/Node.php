@@ -18,26 +18,31 @@ class Node
      * @var string
      */
     public $name;
+
     /**
      * 节点的完整路径，该节点在某个特定的bucket下面的绝对路径，路径从 / 开始
      * @var string
      */
     public $fullPath;
+
     /**
      * 节点所属的bucket名字
      * @var string
      */
     public $bucket;
+
     /**
      * 节点上面附着的自定义属性，由使用系统的业务自行决定
      * @var string
      */
     public $attribute;
+
     /**
      * 节点创建时间
      * @var int UNIX 格式的时间戳
      */
     public $createTime;
+
     /**
      * 节点最后更新时间
      * @var int UNIX 格式的时间戳
@@ -53,6 +58,24 @@ class Node
     public function __construct()
     {
 
+    }
+
+    /**
+     * 判定节点是否存在
+     * @return boolean
+     */
+    public function exists()
+    {
+        return $this->cos->nodeExists($this->bucket, $this->fullPath);
+    }
+
+    /**
+     * 删除节点
+     * @return boolean
+     */
+    public function delete()
+    {
+        return $this->cos->deleteNode($this->bucket, $this->fullPath);
     }
 
 }
