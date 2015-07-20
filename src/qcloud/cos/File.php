@@ -28,6 +28,20 @@ class File extends Node
      */
     public $url;
 
+    public function load()
+    {
+        $data             = $this->loadData();
+        $this->name       = $data['name'];
+        $this->attribute  = $data['biz_attr'];
+        $this->createTime = $data['ctime'];
+        $this->modifyTime = $data['mtime'];
+        $this->size       = $data['filesize'];
+        $this->sha        = $data['sha'];
+        $this->url        = $data['access_url'];
+        $this->loaded     = true;
+        return $this->loaded;
+    }
+
     public function parentDirectory()
     {
 

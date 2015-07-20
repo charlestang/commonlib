@@ -55,9 +55,58 @@ class Node
      */
     protected $cos;
 
-    public function __construct()
-    {
+    /**
+     * 节点是否加载数据
+     *
+     * 如果节点已经与腾讯云服务进行过通讯，并载入所有数据，则该值为true，否则为false
+     * @var boolean
+     */
+    protected $loaded = false;
 
+    /**
+     * @param string $fullPath 该节点的绝对路径
+     * @param \charlestang\commonlib\qcloud\cos\Cos $cos 与腾讯云连接的Cos对象
+     */
+    public function __construct($bucket, $fullPath, $cos = null)
+    {
+        $this->bucket   = $bucket;
+        $this->fullPath = $fullPath;
+        if ($cos === null) {
+            $this->cos = new Cos();
+        }
+    }
+
+    /**
+     * 连接腾讯云，加载数据
+     * @return boolean
+     */
+    public function load()
+    {
+        $data             = $this->loadData();
+        $this->name       = $data['name'];
+        $this->attribute  = $data['biz_attr'];
+        $this->createTime = $data['ctime'];
+        $this->modifyTime = $data['mtime'];
+        $this->loaded = true;
+        return $this->loaded;
+    }
+
+    /**
+     * 装载数据
+     * @return array
+     */
+    protected function loadData()
+    {
+        return $this->cos->statNode($this->bucket, $this->fullPath);
+    }
+
+    /**
+     * 节点是否加载数据
+     * @return boolean
+     */
+    public function isLoaded()
+    {
+        return $this->loaded;
     }
 
     /**
