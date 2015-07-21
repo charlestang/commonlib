@@ -88,7 +88,7 @@ class Node
         $this->createTime = $data['ctime'];
         $this->modifyTime = $data['mtime'];
         $this->loaded = true;
-        return $this->loaded;
+        return $this;
     }
 
     /**

@@ -30,7 +30,10 @@ class File extends Node
 
     public function load()
     {
-        $data             = $this->loadData();
+        $data = $this->loadData();
+        if (!isset($data['filesize']) || !isset($data['sha'])) {
+            throw new Exception(Error::ERR_INVALID_FILE, Error::msg(Error::ERR_INVALID_FILE));
+        }
         $this->name       = $data['name'];
         $this->attribute  = $data['biz_attr'];
         $this->createTime = $data['ctime'];
@@ -39,12 +42,12 @@ class File extends Node
         $this->sha        = $data['sha'];
         $this->url        = $data['access_url'];
         $this->loaded     = true;
-        return $this->loaded;
+        return $this;
     }
 
     public function parentDirectory()
     {
-
+        
     }
 
 }
