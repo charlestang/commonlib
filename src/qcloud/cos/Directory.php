@@ -55,4 +55,26 @@ class Directory extends Node
         return $this->load();
     }
 
+    /**
+     * 将本地文件上传到这个目录下
+     * @param string $filePath
+     * @param boolean $load
+     * @return File
+     * @throws Exception
+     */
+    public function updateFile($filePath, $load = true)
+    {
+        if (!file_exists($filePath)) {
+            throw new Exception(Error::ERR_FILE_NOT_EXISTS, Error::msg(Error::ERR_FILE_NOT_EXISTS));
+        }
+
+        $fileName = substr($filePath, (strrpos($filePath, '/') + 1));
+        $this->cos->uploadFile($this->bucket, $this->fullPath . $fileName , $filePath);
+        $file = new File($this->bucket, $this->fullPath . $fileName, $this->cos);
+        if ($load) {
+            $file->load();
+        }
+        return $file;
+    }
+
 }

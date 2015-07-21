@@ -10,9 +10,13 @@ namespace charlestang\commonlib\qcloud\cos;
 class Exception extends \Exception
 {
 
-    public function __construct($code, $message)
+    /**
+     * @param int $code 错误码
+     * @param string $message 错误消息
+     */
+    public function __construct($code, $message, $previous = null)
     {
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $previous);
     }
 
 }
