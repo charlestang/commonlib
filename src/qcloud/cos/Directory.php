@@ -10,21 +10,6 @@ namespace charlestang\commonlib\qcloud\cos;
 class Directory extends Node
 {
 
-    protected $children = null;
-
-    /**
-     * 返回目录的所有子节点
-     * @return Node[]
-     */
-    public function getChildren()
-    {
-        if ($this->children === null) {
-
-        }
-
-        return $this->children;
-    }
-
     /**
      * 递归删除目录
      *
@@ -58,6 +43,16 @@ class Directory extends Node
      */
     public function createRecursively()
     {
+        $dirs = explode('/', trim($this->fullPath, '/'));
+        $path = '/';
+        foreach ($dirs as $dir) {
+            $path .= $dir . '/';
+            if (!$this->cos->directoryExists($this->bucket, $path)) {
+                $this->cos->createDirectory($this->bucket, $path);
+            }
+        }
 
+        return $this->load();
     }
+
 }
