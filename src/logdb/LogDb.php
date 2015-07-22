@@ -143,7 +143,7 @@ class LogDb
         // 发包
         $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
         socket_set_nonblock($sock);
-        socket_sendto($sock, $bin, strlen($bin), MSG_DONTROUTE, $this->ip, $this->port);
+        @socket_sendto($sock, $bin, strlen($bin), MSG_DONTROUTE, $this->ip, $this->port);
         socket_close($sock);
         return true; // 不等待回包，直接返回
     }
