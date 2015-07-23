@@ -73,6 +73,8 @@ class Node
         $this->fullPath = $fullPath;
         if ($cos === null) {
             $this->cos = new Cos();
+        } else {
+            $this->cos = $cos;
         }
     }
 

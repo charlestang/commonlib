@@ -47,7 +47,7 @@ class File extends Node
 
     public function parentDirectory()
     {
-        
+
     }
 
 }
