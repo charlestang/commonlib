@@ -28,6 +28,11 @@ class File extends Node
      */
     public $url;
 
+    /**
+     * 加载文件的基本信息
+     * @return File
+     * @throws Exception
+     */
     public function load()
     {
         $data = $this->loadData();
@@ -43,11 +48,6 @@ class File extends Node
         $this->url        = $data['access_url'];
         $this->loaded     = true;
         return $this;
-    }
-
-    public function parentDirectory()
-    {
-
     }
 
 }
