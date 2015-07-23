@@ -62,7 +62,7 @@ class Directory extends Node
      * @return File
      * @throws Exception
      */
-    public function updateFile($filePath, $load = true)
+    public function uploadFile($filePath, $load = true)
     {
         if (!file_exists($filePath)) {
             throw new Exception(Error::ERR_FILE_NOT_EXISTS, Error::msg(Error::ERR_FILE_NOT_EXISTS));
