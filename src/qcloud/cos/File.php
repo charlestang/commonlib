@@ -52,15 +52,21 @@ class File extends Node
 
     /**
      * 使用本地文件替换替换远端的文件
+     * 如果，云端文件不存在，就创建文件
      * @param string $filePath 本地文件的绝对路径
-     * @param boolean $createIfNotExists 如果远端文件不存在，就创建，如果为false，远端文件不存在将抛出异常
      * @throws Exception
      */
-    public function updateWith($filePath, $createIfNotExists = true)
+    public function updateWith($filePath)
     {
         if (!file_exists($filePath)) {
             throw new Exception(Error::ERR_FILE_NOT_EXISTS, Error::msg(Error::ERR_FILE_NOT_EXISTS));
         }
+
+        $this->delete(); //删除原来的文件
+
+        $result = $this->cos->uploadFile($this->bucket, $this->fullPath, $filePath);
+        $this->createTime = $result['ctime'];
+        return true;
     }
 
 }
