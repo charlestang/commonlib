@@ -62,10 +62,16 @@ class File extends Node
             throw new Exception(Error::ERR_FILE_NOT_EXISTS, Error::msg(Error::ERR_FILE_NOT_EXISTS));
         }
 
-        $this->delete(); //删除原来的文件
+        try {
+            $this->delete(); //删除原来的文件
+        } catch (Exception $ex) {
+            if ($ex->getCode() != Error::ERR_INDEX_NOT_FOUND) {
+                throw $ex;
+            }
+        }
 
-        $result = $this->cos->uploadFile($this->bucket, $this->fullPath, $filePath);
-        $this->createTime = $result['ctime'];
+        $result    = $this->cos->uploadFile($this->bucket, $this->fullPath, $filePath);
+        $this->url = $result['access_url'];
         return true;
     }
 
