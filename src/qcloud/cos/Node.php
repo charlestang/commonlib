@@ -89,7 +89,7 @@ class Node
         $this->attribute  = $data['biz_attr'];
         $this->createTime = $data['ctime'];
         $this->modifyTime = $data['mtime'];
-        $this->loaded = true;
+        $this->loaded     = true;
         return $this;
     }
 
@@ -127,6 +127,26 @@ class Node
     public function delete()
     {
         return $this->cos->deleteNode($this->bucket, $this->fullPath);
+    }
+
+    /**
+     * 读取节点的自定义属性
+     * @return string
+     */
+    public function getAttribute()
+    {
+        $this->load();
+        return $this->attribute;
+    }
+
+    /**
+     * 设置节点的自定义属性
+     * @param string $attribute
+     * @return boolean
+     */
+    public function setAttribute($attribute)
+    {
+        return $this->cos->updateNode($this->bucket, $this->fullPath, $attribute);
     }
 
 }
