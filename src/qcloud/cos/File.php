@@ -75,5 +75,4 @@ class File extends Node
         return true;
     }
 
-
 }
