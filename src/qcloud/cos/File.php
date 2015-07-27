@@ -12,6 +12,9 @@ namespace charlestang\commonlib\qcloud\cos;
  * @property string $attribute   文件的属性,可以随意设置的一个字符串
  * @property int    $createTime  文件创建时间,Unix时间戳
  * @property int    $modifyTime  文件最后更新时间,Unix时间戳
+ * @property int    $size        文件的大小,单位是字节
+ * @property string $sha         文件的hash签名
+ * @property string $url         文件的访问url
  */
 class File extends Node
 {
