@@ -9,6 +9,12 @@ namespace charlestang\commonlib\qcloud\cos;
  * 这两者，在使用过程中，表现出一种共性，将其抽象为节点。
  *
  * @author Charles Tang <charlestang@foxmail.com>
+ * @property string $name        节点的名字
+ * @property string $fullPath    节点在云端bucket内部的绝对路径,从/开始
+ * @property string $bucket      节点的bucket名字
+ * @property string $attribute   节点的属性,可以随意设置的一个字符串
+ * @property int    $createTime  节点创建时间,Unix时间戳
+ * @property int    $modifyTime  节点最后更新时间,Unix时间戳
  */
 class Node
 {

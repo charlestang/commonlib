@@ -6,6 +6,12 @@ namespace charlestang\commonlib\qcloud\cos;
  * 对文件的抽象封装
  *
  * @author Charles Tang <charlestang@foxmail.com>
+ * @property string $name        文件的名字,不带路径
+ * @property string $fullPath    文件在云端bucket内部的绝对路径,从/开始
+ * @property string $bucket      文件的bucket名字
+ * @property string $attribute   文件的属性,可以随意设置的一个字符串
+ * @property int    $createTime  文件创建时间,Unix时间戳
+ * @property int    $modifyTime  文件最后更新时间,Unix时间戳
  */
 class File extends Node
 {
