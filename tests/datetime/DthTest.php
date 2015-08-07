@@ -55,13 +55,13 @@ class DthTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testGetDateInterval() 
+    public function testGetDateInterval()
     {
         $expected = [
             ['2015-01-01 00:00:00', '2015-01-01 23:59:59'],
             ['2014-12-31 00:00:00', '2015-01-01 00:00:00'],
         ];
-        $actual = [
+        $actual   = [
             Dth::getDateInterval('2015-01-01 12:34:56'),
             Dth::getDateInterval('2014-12-31 12:34:56', Dth::INTERVAL_HALF_CLOSED),
         ];
@@ -81,6 +81,17 @@ class DthTest extends PHPUnit_Framework_TestCase
             Dth::countDays('2015-03-01', '2015-02-28'),
             Dth::countDays('2015-01-01 23:59:59', '2015-01-01 00:00:00'),
             Dth::countDays('2014-12-31', '2015-01-01'),
+        ];
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testGetDayOrderOfWeek()
+    {
+        $expected = [
+            6,
+        ];
+        $actual   = [
+            Dth::getDayOrderOfWeek('2015-08-08 01:41:00'),
         ];
         $this->assertEquals($expected, $actual);
     }

@@ -39,10 +39,16 @@ class Dth
     const BY_FORMATTED_DATE = 'formatted';  //formatted datetime
 
     /**
-     * Interval Type
+     * Interval type
      */
     const INTERVAL_CLOSED      = 'closed';      //closed interval, e.g. [x, y]
     const INTERVAL_HALF_CLOSED = 'half-closed'; //half-closed interval on left, e.g. [x, y)
+
+    /**
+     * Week day type
+     */
+    const FIRST_DAY_SUNDAY = 'w';
+    const FIRST_DAY_MONDAY = 'N';
 
     //above constant definition
 
@@ -63,11 +69,23 @@ class Dth
         return $time;
     }
 
+    /**
+     * Get the date of today
+     * @param string $by
+     * @param string $format
+     * @return mixed
+     */
     public static function getTodayDate($by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATE)
     {
         return self::translate('today', $by, $format);
     }
 
+    /**
+     * Get the date of tomorrow
+     * @param string $by
+     * @param string $format
+     * @return mixed
+     */
     public static function getTomorrowDate($by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATE)
     {
         return self::translate('tomorrow', $by, $format);
@@ -144,21 +162,22 @@ class Dth
         return self::translate(self::translate($string, self::BY_FORMATTED_DATE, self::FORMAT_MYSQL_DATE), $by, $format);
     }
 
-    public static function getDateEnd($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME) 
+    public static function getDateEnd($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
     {
-        return self::translate(self::translate($string, self::BY_FORMATTED_DATE, self::FORMAT_MYSQL_DATE) . ' 23:59:59', $by, $format);
+        return self::translate(self::translate($string, self::BY_FORMATTED_DATE, self::FORMAT_MYSQL_DATE) . ' 23:59:59', $by,
+                $format);
     }
 
     /**
      * This method is used to calculate an interval of some specific date time string.
-     * 
+     *
      * @param string $string date time string
      * @param string $style  what the style of the interval, HALF_CLOSED, e.g. [x,y) , CLOSED, e.g. [x,y] .
      * @param string $by     in which way to translate
      * @param string $format format string
      * @return array
      */
-    public static function getDateInterval($string, $style=self::INTERVAL_CLOSED, $by = self::BY_FORMATTED_DATE, 
+    public static function getDateInterval($string, $style = self::INTERVAL_CLOSED, $by = self::BY_FORMATTED_DATE,
         $format = self::FORMAT_MYSQL_DATETIME)
     {
         $start = self::getDateStart($string);
@@ -185,6 +204,11 @@ class Dth
         }
         $interval = date_diff(date_create(date('Y-m-d', strtotime($big))), date_create($small));
         return $minus ? 0 - $interval->format('%a') : intval($interval->format('%a'));
+    }
+
+    public static function getDayOrderOfWeek($string, $in = self::FIRST_DAY_SUNDAY)
+    {
+        return date($in, self::translate($string, self::BY_UNIX_TIMESTAMP));
     }
 
 }
