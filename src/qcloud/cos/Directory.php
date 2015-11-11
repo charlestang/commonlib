@@ -69,12 +69,11 @@ class Directory extends Node
         }
 
         $fileName = substr($filePath, (strrpos($filePath, '/') + 1));
-        $this->cos->uploadFile($this->bucket, $this->fullPath . $fileName , $filePath);
+        $this->cos->uploadFile($this->bucket, $this->fullPath . $fileName, $filePath);
         $file = new File($this->bucket, $this->fullPath . $fileName, $this->cos);
         if ($load) {
             $file->load();
         }
         return $file;
     }
-
 }

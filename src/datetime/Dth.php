@@ -33,6 +33,11 @@ class Dth
     const FORMAT_MYSQL_DATE     = 'Y-m-d'; //MySQL accepted date format
 
     /**
+     * Template string
+     */
+    const TPL_MONTH_START = 'Y-m-01 00:00:00';
+
+    /**
      * Return style
      */
     const BY_UNIX_TIMESTAMP = 'timestamp'; //Unix timestamp
@@ -101,9 +106,13 @@ class Dth
         return self::translate('now', $by, $format);
     }
 
-    public static function translateInterval($start, $end, $style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
-        $format = self::FORMAT_MYSQL_DATETIME)
-    {
+    public static function translateInterval(
+        $start,
+        $end,
+        $style = self::INTERVAL_HALF_CLOSED,
+        $by = self::BY_UNIX_TIMESTAMP,
+        $format = self::FORMAT_MYSQL_DATETIME
+    ) {
         $start_time = self::translate($start, self::BY_UNIX_TIMESTAMP);
         $end_time   = self::translate($end, self::BY_UNIX_TIMESTAMP);
         if ($style == self::INTERVAL_CLOSED) {
@@ -116,44 +125,56 @@ class Dth
         return [$start_time, $end_time];
     }
 
-    public static function getTodayInterval($style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
-        $format = self::FORMAT_MYSQL_DATETIME)
-    {
+    public static function getTodayInterval(
+        $style = self::INTERVAL_HALF_CLOSED,
+        $by = self::BY_UNIX_TIMESTAMP,
+        $format = self::FORMAT_MYSQL_DATETIME
+    ) {
         return self::translateInterval('today', 'tomorrow', $style, $by, $format);
     }
 
-    public static function getYesterdayInterval($style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
-        $format = self::FORMAT_MYSQL_DATETIME)
-    {
+    public static function getYesterdayInterval(
+        $style = self::INTERVAL_HALF_CLOSED,
+        $by = self::BY_UNIX_TIMESTAMP,
+        $format = self::FORMAT_MYSQL_DATETIME
+    ) {
         return self::translateInterval('yesterday', 'today', $style, $by, $format);
     }
 
-    public static function getTomorrowInterval($style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
-        $format = self::FORMAT_MYSQL_DATETIME)
-    {
+    public static function getTomorrowInterval(
+        $style = self::INTERVAL_HALF_CLOSED,
+        $by = self::BY_UNIX_TIMESTAMP,
+        $format = self::FORMAT_MYSQL_DATETIME
+    ) {
         return self::translateInterval('tomorrow', 'tomorrow +1 day', $style, $by, $format);
     }
 
-    public static function getThisMonthInterval($style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
-        $format = self::FORMAT_MYSQL_DATETIME)
-    {
-        $month_start = date('Y-m-01 00:00:00', self::translate('this month', self::BY_UNIX_TIMESTAMP));
+    public static function getThisMonthInterval(
+        $style = self::INTERVAL_HALF_CLOSED,
+        $by = self::BY_UNIX_TIMESTAMP,
+        $format = self::FORMAT_MYSQL_DATETIME
+    ) {
+        $month_start = date(self::TPL_MONTH_START, self::translate('this month', self::BY_UNIX_TIMESTAMP));
         return self::translateInterval($month_start, $month_start . ' +1 month', $style, $by, $format);
     }
 
-    public static function getNextMonthInterval($style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
-        $format = self::FORMAT_MYSQL_DATETIME)
-    {
-        $month_start      = date('Y-m-01 00:00:00', self::translate('this month', self::BY_UNIX_TIMESTAMP));
-        $next_month_start = date('Y-m-01 00:00:00', self::translate($month_start . ' +1 month', self::BY_UNIX_TIMESTAMP));
+    public static function getNextMonthInterval(
+        $style = self::INTERVAL_HALF_CLOSED,
+        $by = self::BY_UNIX_TIMESTAMP,
+        $format = self::FORMAT_MYSQL_DATETIME
+    ) {
+        $month_start      = date(self::TPL_MONTH_START, self::translate('this month', self::BY_UNIX_TIMESTAMP));
+        $next_month_start = date(self::TPL_MONTH_START, self::translate($month_start . ' +1 month', self::BY_UNIX_TIMESTAMP));
         return self::translateInterval($next_month_start, $next_month_start . ' +1 month', $style, $by, $format);
     }
 
-    public static function getLastMonthInterval($style = self::INTERVAL_HALF_CLOSED, $by = self::BY_UNIX_TIMESTAMP,
-        $format = self::FORMAT_MYSQL_DATETIME)
-    {
-        $month_start      = date('Y-m-01 00:00:00', self::translate('this month', self::BY_UNIX_TIMESTAMP));
-        $last_month_start = date('Y-m-01 00:00:00', self::translate($month_start . ' -1 month', self::BY_UNIX_TIMESTAMP));
+    public static function getLastMonthInterval(
+        $style = self::INTERVAL_HALF_CLOSED,
+        $by = self::BY_UNIX_TIMESTAMP,
+        $format = self::FORMAT_MYSQL_DATETIME
+    ) {
+        $month_start      = date(self::TPL_MONTH_START, self::translate('this month', self::BY_UNIX_TIMESTAMP));
+        $last_month_start = date(self::TPL_MONTH_START, self::translate($month_start . ' -1 month', self::BY_UNIX_TIMESTAMP));
         return self::translateInterval($last_month_start, $last_month_start . ' +1 month', $style, $by, $format);
     }
 
@@ -164,8 +185,11 @@ class Dth
 
     public static function getDateEnd($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
     {
-        return self::translate(self::translate($string, self::BY_FORMATTED_DATE, self::FORMAT_MYSQL_DATE) . ' 23:59:59', $by,
-                $format);
+        return self::translate(
+            self::translate($string, self::BY_FORMATTED_DATE, self::FORMAT_MYSQL_DATE) . ' 23:59:59',
+            $by,
+            $format
+        );
     }
 
     /**
@@ -177,9 +201,12 @@ class Dth
      * @param string $format format string
      * @return array
      */
-    public static function getDateInterval($string, $style = self::INTERVAL_CLOSED, $by = self::BY_FORMATTED_DATE,
-        $format = self::FORMAT_MYSQL_DATETIME)
-    {
+    public static function getDateInterval(
+        $string,
+        $style = self::INTERVAL_CLOSED,
+        $by = self::BY_FORMATTED_DATE,
+        $format = self::FORMAT_MYSQL_DATETIME
+    ) {
         $start = self::getDateStart($string);
         return self::translateInterval($start, $start . ' +1 day', $style, $by, $format);
     }
@@ -210,5 +237,4 @@ class Dth
     {
         return date($in, self::translate($string, self::BY_UNIX_TIMESTAMP));
     }
-
 }

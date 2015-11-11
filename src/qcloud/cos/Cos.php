@@ -74,8 +74,10 @@ class Cos
             $body['biz_attr'] = $attribute;
         }
         $payload = json_encode($body);
-        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
-            $this->getAuthorizationSign($bucketName, $path));
+        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader(
+            'authorization',
+            $this->getAuthorizationSign($bucketName, $path)
+        );
         return $this->doRequest($request);
     }
 
@@ -122,8 +124,10 @@ class Cos
             'biz_attr' => $bizAttr,
         ];
         $payload = json_encode($body);
-        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
-            $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
+        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader(
+            'authorization',
+            $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE)
+        );
         return $this->doRequest($request);
     }
 
@@ -139,9 +143,15 @@ class Cos
      *
      * @return type
      */
-    public function lsNode($bucketName, $nodePath, $prefix = '', $offset = '', $pageSize = 10,
-        $pattern = self::LIST_PATTERN_BOTH, $direction = self::LIST_ORDER_NORMAL)
-    {
+    public function lsNode(
+        $bucketName,
+        $nodePath,
+        $prefix = '',
+        $offset = '',
+        $pageSize = 10,
+        $pattern = self::LIST_PATTERN_BOTH,
+        $direction = self::LIST_ORDER_NORMAL
+    ) {
         $path   = $this->getAbsolutePath($bucketName, $nodePath);
         $apiUrl = $this->getBaseUrl() . $path;
         if (!empty($prefix)) { //如果按照前缀搜索的话
@@ -221,8 +231,10 @@ class Cos
             'op' => 'delete',
         ];
         $payload = json_encode($body);
-        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader('authorization',
-            $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE));
+        $request = Request::post($this->getBaseUrl() . $path, $payload, 'json')->addHeader(
+            'authorization',
+            $this->getAuthorizationSign($bucketName, $path, self::SIGN_TYPE_ONCE)
+        );
         return $this->doRequest($request);
     }
 
@@ -236,9 +248,14 @@ class Cos
      * @param int $direction
      * @return array
      */
-    public function listDirectory($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10,
-        $direction = self::LIST_ORDER_NORMAL)
-    {
+    public function listDirectory(
+        $bucketName,
+        $dirPath,
+        $prefix = '',
+        $offset = '',
+        $pageSize = 10,
+        $direction = self::LIST_ORDER_NORMAL
+    ) {
         $this->checkDirPath($dirPath);
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_DIR_ONLY, $direction);
     }
@@ -253,9 +270,14 @@ class Cos
      * @param int $direction
      * @return array
      */
-    public function listFile($bucketName, $dirPath, $prefix = '', $offset = '', $pageSize = 10,
-        $direction = self::LIST_ORDER_NORMAL)
-    {
+    public function listFile(
+        $bucketName,
+        $dirPath,
+        $prefix = '',
+        $offset = '',
+        $pageSize = 10,
+        $direction = self::LIST_ORDER_NORMAL
+    ) {
         $this->checkDirPath($dirPath);
         return $this->lsNode($bucketName, $dirPath, $prefix, $offset, $pageSize, self::LIST_PATTERN_FILE_ONLY, $direction);
     }
@@ -331,8 +353,10 @@ class Cos
         if (!empty($attribute)) {
             $body['biz_attr'] = $attribute;
         }
-        $request = Request::post($this->getBaseUrl() . $path, $body, Mime::UPLOAD)->expects('json')->addHeader('authorization',
-            $this->getAuthorizationSign($bucketName, $path));
+        $request = Request::post($this->getBaseUrl() . $path, $body, Mime::UPLOAD)->expects('json')->addHeader(
+            'authorization',
+            $this->getAuthorizationSign($bucketName, $path)
+        );
         return $this->doRequest($request);
     }
 

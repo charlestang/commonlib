@@ -42,5 +42,4 @@ class DirectoryTest extends PHPUnit_Framework_TestCase
         $this->assertAttributeEquals('test_upload.txt', 'name', $file);
         $this->assertAttributeEquals('/test_directory/create_recursively/test_upload.txt', 'fullPath', $file);
     }
-
 }

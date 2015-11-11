@@ -42,5 +42,4 @@ class FileTest extends PHPUnit_Framework_TestCase
         $result2  = $file2->updateWith($filePath);
         $this->assertTrue($result2);
     }
-
 }

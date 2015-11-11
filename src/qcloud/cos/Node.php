@@ -154,5 +154,4 @@ class Node
     {
         return $this->cos->updateNode($this->bucket, $this->fullPath, $attribute);
     }
-
 }

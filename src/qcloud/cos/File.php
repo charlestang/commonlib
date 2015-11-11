@@ -83,5 +83,4 @@ class File extends Node
         $this->url = $result['access_url'];
         return true;
     }
-
 }

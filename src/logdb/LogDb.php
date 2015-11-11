@@ -107,8 +107,11 @@ class LogDb
                         $gmp_h = gmp_div($gmp_v, $gmp_32bit_max);
                         $gmp_l = gmp_mod($gmp_v, $gmp_32bit_max);
 
-                        $bin .= pack('N*N*', sprintf('%d', (float) gmp_strval($gmp_h)),
-                            sprintf('%d', (float) gmp_strval($gmp_l)));
+                        $bin .= pack(
+                            'N*N*',
+                            sprintf('%d', (float) gmp_strval($gmp_h)),
+                            sprintf('%d', (float) gmp_strval($gmp_l))
+                        );
                         break;
 
                     case 'ubigint':
@@ -118,8 +121,11 @@ class LogDb
                         $gmp_h = gmp_div($gmp_v, $gmp_32bit_max); // 高位
                         $gmp_l = gmp_mod($gmp_v, $gmp_32bit_max); // 低位
 
-                        $bin .= pack('N*N*', sprintf('%d', (float) gmp_strval($gmp_h)),
-                            sprintf('%d', (float) gmp_strval($gmp_l)));
+                        $bin .= pack(
+                            'N*N*',
+                            sprintf('%d', (float) gmp_strval($gmp_h)),
+                            sprintf('%d', (float) gmp_strval($gmp_l))
+                        );
                         break;
 
                     case 'float':
@@ -147,5 +153,4 @@ class LogDb
         socket_close($sock);
         return true; // 不等待回包，直接返回
     }
-
 }
