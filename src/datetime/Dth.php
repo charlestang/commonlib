@@ -86,6 +86,18 @@ class Dth
     }
 
     /**
+     * Get the next date of specified date
+     * @param string $string date time string
+     * @param string $by     in which way to translate
+     * @param string $format format string
+     * @return mixed
+     */
+    public static function getNextDate($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATE)
+    {
+        return self::translate($string . ' +1 day', $by, $format);
+    }
+
+    /**
      * Get the date of tomorrow
      * @param string $by
      * @param string $format
