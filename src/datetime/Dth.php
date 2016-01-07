@@ -108,6 +108,12 @@ class Dth
         return self::translate('tomorrow', $by, $format);
     }
 
+    /**
+     * Get the date of yesterday
+     * @param string $by 
+     * @param string $format 
+     * @return mixed
+     */
     public static function getYesterdayDate($by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATE)
     {
         return self::translate('yesterday', $by, $format);
@@ -188,6 +194,17 @@ class Dth
         $month_start      = date(self::TPL_MONTH_START, self::translate('this month', self::BY_UNIX_TIMESTAMP));
         $last_month_start = date(self::TPL_MONTH_START, self::translate($month_start . ' -1 month', self::BY_UNIX_TIMESTAMP));
         return self::translateInterval($last_month_start, $last_month_start . ' +1 month', $style, $by, $format);
+    }
+
+    public static function getMonthInterval(
+        $string,
+        $style = self::INTERVAL_HALF_CLOSED,
+        $by = self::BY_UNIX_TIMESTAMP,
+        $format = self::FORMAT_MYSQL_DATETIME
+    ) {
+        $month_start   = date(self::TPL_MONTH_START, self::translate($string, self::BY_UNIX_TIMESTAMP));
+        $next_month_start = date(self::TPL_MONTH_START, self::translate($month_start . ' +1 month', self::BY_UNIX_TIMESTAMP));
+        return self::translateInterval($next_month_start, $next_month_start . ' +1 month', $style, $by, $format);
     }
 
     public static function getDateStart($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)
