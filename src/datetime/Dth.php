@@ -110,8 +110,8 @@ class Dth
 
     /**
      * Get the date of yesterday
-     * @param string $by 
-     * @param string $format 
+     * @param string $by
+     * @param string $format
      * @return mixed
      */
     public static function getYesterdayDate($by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATE)
