@@ -203,8 +203,7 @@ class Dth
         $format = self::FORMAT_MYSQL_DATETIME
     ) {
         $month_start   = date(self::TPL_MONTH_START, self::translate($string, self::BY_UNIX_TIMESTAMP));
-        $next_month_start = date(self::TPL_MONTH_START, self::translate($month_start . ' +1 month', self::BY_UNIX_TIMESTAMP));
-        return self::translateInterval($next_month_start, $next_month_start . ' +1 month', $style, $by, $format);
+        return self::translateInterval($month_start, $month_start . ' +1 month', $style, $by, $format);
     }
 
     public static function getDateStart($string, $by = self::BY_FORMATTED_DATE, $format = self::FORMAT_MYSQL_DATETIME)

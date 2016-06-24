@@ -95,4 +95,15 @@ class DthTest extends PHPUnit_Framework_TestCase
         ];
         $this->assertEquals($expected, $actual);
     }
+
+    public function testGetMonthInterval()
+    {
+        $expected = [
+            ['2016-05-01 00:00:00', '2016-06-01 00:00:00'],
+        ];
+        $actual = [
+            Dth::getMonthInterval('2016-05-01', Dth::INTERVAL_HALF_CLOSED, Dth::BY_FORMATTED_DATE),
+        ];
+        $this->assertEquals($expected, $actual);
+    }
 }
